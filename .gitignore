@@ -1,0 +1,31 @@
+# Personal data — never publish
+gsd-lite/
+
+# gsd-lite scaffolder leftovers (this repo ships gsd-mentor only — install gsd-lite separately if you want it)
+.claude/agents/gsd-lite.md
+.claude/commands/gsd/
+
+# Personal letters / longer-form private writing (identity-anchor docs)
+raw/letters/*
+!raw/letters/.gitkeep
+
+# Personal article archive / clipped reading
+raw/medium/*
+!raw/medium/.gitkeep
+
+# Retired surfaces (v3 — 2026-05-15): wiki/, raw-sessions/, skills/
+_archive/
+
+# Reference repos for study
+_ref/
+
+# Per-user pointers to active rebuild tracks (host + paths — not part of the template)
+skills/*/pilots.md
+
+# The learner's actual profile — personal instance, never published. Only the template ships.
+PROFILE.md
+PROFILE-*.md
+!PROFILE.template.md
+
+# OS noise
+.DS_Store
