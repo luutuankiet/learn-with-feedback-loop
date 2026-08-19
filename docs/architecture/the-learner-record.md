@@ -8,7 +8,7 @@ verified: 2026-08-19
 
 Every mentoring session opens by reading a record of who the learner is. **That
 record is not in this repository, and putting it here would be a defect.** What
-ships here is `skills/learn-with-reps/templates/record/` — the empty skeleton
+ships here is `skills/learn/templates/record/` — the empty skeleton
 `bin/install.sh` seeds a brand-new record from, never an instance.
 
 ## Why it lives elsewhere
@@ -20,7 +20,7 @@ It is also the most personal file in the system, so it belongs in a private repo
 this public one never sees.
 
 The sidecar resolves it to a **root directory, never a filename** —
-`skills/learn-with-reps/ref/record.md` states this explicitly, because what lives
+`skills/learn/ref/record.md` states this explicitly, because what lives
 under that root is the record's own business and no session should assume a shape.
 
 ## The address is stated, never inferred
@@ -58,7 +58,7 @@ The record used to be a single three-tier `PROFILE.md`. It is now:
 - a **generated index**
 
 The full structure, and the reasoning behind every field, is in
-`skills/learn-with-reps/ref/profile-schema.md` (121 lines). Read that before
+`skills/learn/ref/profile-schema.md` (121 lines). Read that before
 any structural write; it is the only place the schema is defined, and it is not
 restated here on purpose.
 
@@ -82,7 +82,7 @@ demand. **Never a full read**; the record grows forever and the boot payload mus
 not.
 
 It ships with the plugin rather than with the record —
-`skills/learn-with-reps/bin/boot.sh` — so everything executable stays inside
+`skills/learn/bin/boot.sh` — so everything executable stays inside
 the skill, the record stays pure data, and the schema is defined in one place. The
 three modes are flags on the same scan:
 

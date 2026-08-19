@@ -6,7 +6,7 @@ verified: 2026-08-19
 
 # The graded rebuild
 
-`skills/learn-with-reps/ref/rebuild.md` (roughly 300 lines, plus 196 of design in
+`skills/learn/ref/rebuild.md` (roughly 300 lines, plus 196 of design in
 `ref/rebuild-design.md`) is the largest reference in the repository and the least
 like anything else in it. Where the discipline in `SKILL.md` mentors a
 conversation, this one runs a **curriculum over a real repository the learner
@@ -17,7 +17,7 @@ reachable.
 
 ## The core bet: git is the exercise substrate
 
-The design's central claim, argued in `skills/learn-with-reps/ref/rebuild-design.md`, is that a
+The design's central claim, argued in `skills/learn/ref/rebuild-design.md`, is that a
 version-controlled repository already contains everything an exercise generator
 would otherwise have to synthesise:
 
@@ -31,7 +31,7 @@ rots the moment the file changes; a diff against `HEAD` cannot.
 
 ## What a track is made of
 
-A track is stamped out from `skills/learn-with-reps/templates/track/`:
+A track is stamped out from `skills/learn/templates/track/`:
 
 | template | what it becomes |
 |---|---|
