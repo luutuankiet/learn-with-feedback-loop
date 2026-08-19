@@ -6,13 +6,15 @@ user-invocable: true
 
 # learn-with-reps-gsd
 
-Sidecar to **learn-with-reps**. That skill is filesystem-blind by design. This one adds the **persistent learner-profile** when the session can reach the filesystem.
+Sidecar to **learn-with-reps**. That skill is filesystem-blind by design. This one adds the **persistent learner record** when the session can reach the filesystem.
 
-**Load trigger (lives HERE, never in learn-with-reps):** when `learn-with-reps` is active AND this session has filesystem access, load this skill and hydrate the profile before drilling. learn-with-reps stays blind — the awareness that a profile exists is this skill's job, so the generic skill remains portable to any environment.
+**Load trigger (lives HERE, never in learn-with-reps):** when `learn-with-reps` is active AND this session has filesystem access, load this skill and boot the record before drilling. learn-with-reps stays blind — the awareness that a record exists is this skill's job, so the generic skill remains portable to any environment.
 
-## The profile
+## The record
 
-A single, global learner-profile shared across every project and every learning track. It lives **outside** any one codebase — it spans them.
+A single, global learner record shared across every project and every learning track. It lives **outside** any one codebase — it spans them — and it is a **tree**, not a file: one page per topic, a generated index, and a hand-written Level 0 that a learning session never writes.
+
+**Resolution returns a root directory, never a filename.** What lives under that root belongs to the record's own layout; this skill hands over a root and asks no further questions about the shape inside it.
 
 **Finding it — resolution order, first hit wins. Resolve it once at session start and use that path for the rest of the session.**
 
@@ -22,67 +24,109 @@ A single, global learner-profile shared across every project and every learning 
 
 **Never guess a path and never create a second profile.** Two profiles is the failure that silently splits a learner's history in half.
 
-- **Structure + rationale:** documented in `ref/profile-schema.md`, sibling of this file. **Read that doc before any non-trivial structural write** — it defines the tiers, the header grammar, the status lifecycle, and the rollup rules. Don't improvise structure.
+- **Structure + rationale:** documented in `ref/profile-schema.md`, sibling of this file. **Read that doc before any non-trivial structural write** — it defines the stored frontmatter, what is derived and must never be stored, the status lifecycle, and how ownership is earned. Don't improvise structure.
 
-## Read discipline — ripgrep-in, hydrate on demand
+## Boot — one call, then hydrate on demand
 
-Never full-read the profile (it grows forever). At session start:
+Never full-read the record; it grows forever. The whole session opening is **one script call**, and the script ships with this skill rather than with the record — the harness gives you the absolute path of the skill it loaded, so run `<skill dir>/bin/boot.sh <record root>`. Everything executable stays inside the plugin, the record stays pure data, and the schema is defined in exactly one place.
 
-1. `rg -o '^### \[\w+\] .{0,80}' <profile>` — the **Topic Ledger truncated index** (~5KB): status + topic + head of each model line, every track, one shot. The 80-char cap is deliberate — rows can bloat wider than the schema allows; never pull full rows at boot.
-2. `rg '^## track:' <profile>` — the active tracks.
+That call is the **pseudo-preload**. The harness will never load the record's own instruction file, because the record is never the repo this session was spawned in — so the script emits what a preload would have.
 
-**The index's first rows are `### [ops]` rows under `## track: _meta` — they are INSTRUCTIONS to you, not learner topics.** They carry read-discipline, a compaction-due flag, and the wrap contract. Act on them; they ride the index precisely so no agent can miss them by grepping headers and skipping the prose at the top of the file. Governance that only lives in prose above the title is invisible to a header-grep boot — that is why it is duplicated here as data.
-3. Read **Tier 1 (Learner Core)** at the top — who the learner is + their **concurrent active foci** (they context-switch across many sessions a day; this is NOT one-agent-one-session — use the foci list to locate which track *this* session belongs to).
-4. Hydrate **one or two topic bodies only** — the concepts this session actually touches.
+What comes back, in one output:
 
-That outline ≈ the whole profile for onboarding. Detailed body reads are JIT, by touched topic.
+1. **Level 0, verbatim** — who the learner is: background, fluent anchors, learning traits, coaching points, mentoring preferences, momentum triggers, and the mission. **A learning session never writes this file.** That is what makes many concurrent sessions conflict-free rather than nearly.
+2. **The filtered digest, entirely derived** — `ACTIVE` (learning, with open reps, counted against the cap), `RUSTY` (owned and untouched past the threshold), `UNVERIFIED` (never explained aloud), a total-topic count, and one housekeeping line. Nobody maintains any of it; it is computed from every page's frontmatter on each run, which is why it can never disagree with the record.
 
-## Write discipline — distill-out at wrap
+Then **hydrate one or two topic bodies by name**, on demand, and nothing else. The total-topic line is what keeps the boot bounded a year in: the ledger grows forever, the payload does not.
 
-The end-of-session write is itself a distillation: turn a verbose session into a few durable deltas. Keep it ~300–600 tokens, inline, no ceremony.
+**`RUSTY` and `UNVERIFIED` are instructions, not decoration.** Both list topics you must not build on until you have probed them — see *Probe before you build* in `learn-with-reps`. A topic reading unverified has never been said back in the learner's own words, however recent its date looks.
 
-**Wrap contract (2026-08-11 — non-negotiable):** a learning session may NOT end without either (a) ≥1 profile edit or (b) an explicit "no durable delta this session" line in the closing recap. Silent no-write is the measured #1 leak (1 write in 9 sessions; one explicit "update my profile" instruction dropped). Two width rules make every-session writes safe forever: **≤60 words per ledger row**, and **open reps are ledgered, not lost** — reps posed but unanswered go into the touched row's tail as `reps:answered/posed` so the next session re-drills them. Unanswered reps are a spaced-retrieval feature when recorded, a leak when not.
+**`ACTIVE` is where a session resumes by default**, and a hydrated page's open reps are the resume point. Rep debt answered days later in a fresh session is the **preferred** outcome, not a make-up.
 
-- **Advance touched topics** along the status lifecycle `[gap] → [learning] → [owned]` (+ `[rusty]` if a known one decayed). Sharpen the one-line model / anchor if it improved.
-- **Append one session entry** to Tier 3 (dated, unique-keyed). Promote verbatim learner quotes and analogies that landed up to Tier 1 — those are recall currency.
-- **Touch Tier 1 only** if a durable trait, anchor, or coaching point genuinely surfaced. Tier 1 is rewritten in place, not grown — distill, don't accumulate (the old profile bloated its strengths section by accumulating).
+**Sibling modes** — same script, same scan, no second store: `boot` (the digest above), `query <predicate>` (a filter over the same table, e.g. `owned & last>60d`), `check` (non-zero when the generated index is stale, which the boot repairs by regenerating).
 
-**Multi-concurrent-session safety (critical — the learner runs many sessions at once):**
-- Read the exact section *just before* editing it; another session may have changed it. Don't trust start-of-session state for a wrap write.
-- Use exact-match edits, **never whole-file overwrite**. Append unique-keyed entries so two sessions don't collide.
-- Tier-1 rewrites are rare; when you do one, re-read it immediately before the edit.
+## Harvest — durable artifacts only, and say what you had
 
-**Rollup valve (keeps the outline bounded forever):** when Tier 3 crosses the length threshold in `ref/profile-schema.md` — or the **width valve** fires (Tier-2 ledger >25KB, or any row >60 words) — archive to `_archive/` beside the profile and leave a one-line rolled summary / rewrite rows back to one-liners. Concepts survive as Tier-2 rows; only the narrative is archived. Width, not length, is the measured bloat vector.
+A learning session opens by looking at what the learner actually shipped since the last one. It reads **durable artifacts only** — commits, diffs, pull-request bodies, and the shipping repository's own documentation. **Never a session transcript.** Those are deliberately discarded, and that is a feature: re-deriving a cold decision is a rep, where re-reading a transcript is consumption.
+
+**Zero learning-specific residue in shared repositories.** No trailer, no note, no marker, no file — nothing about learning is ever written into a repository the learner ships in. That is what removes any need for team buy-in, and it is not traded away for convenience.
+
+**The documentation is an input you consume, never one you mandate.** It is ordinary engineering practice with independent value, maintained during shipping sessions for shipping reasons, by whatever the shipping side uses. You are a consumer, and consumers do not get to dictate their inputs. So:
+
+- **Docs present** → harvest reads them alongside commits and diffs. Best case, and what the adjacency ranking assumes.
+- **Docs absent or stale** → fall back to commits and diffs alone, **and say so in one line.** Fewer candidates surface, and they surface without the *why*, so expect to re-derive more.
+
+That one line is the whole mechanism. It makes the dependency visible at the moment it bites, instead of silently producing a thinner menu that looks exactly like a rich one.
+
+**No nudging.** Never tell the learner to go maintain their repository's documentation. That is a different hat in a different session, and a learning session that starts issuing homework about shipping practice has stopped being a learning session.
+
+Rank whatever the harvest surfaces by **adjacency to what the learner genuinely holds** — the zone-of-proximal-development ordering in `learn-with-reps`, walked along the record's anchor edges.
+
+## Write discipline — record engagement, never exposure
+
+The end-of-session write is itself a distillation: a verbose session becomes a few durable deltas. Inline, ~300–600 tokens, no ceremony. The whole wrap is one turn — **pull, write, regenerate the index, commit** — and none of its mechanics reach the learner.
+
+**Pull immediately before the write, never at boot.** `git pull --rebase`, always; `git merge`, never — the history stays linear on a single branch. With many concurrent sessions the hazard is not simultaneous writes, it is a **stale base**: a session that read at boot and writes an hour later. Pulling at wrap collapses that exposure window from a whole session to seconds.
+
+**When the record can't be reached, there are three states, and they need different answers.** Read which one you are in before deciding anything:
+
+| state | condition | behaviour |
+|---|---|---|
+| **A** | no setup pointer at all | Genuine first-time setup. Direct the learner to the install script. **Seeding is legal only here**, and only through that script — never inside a live session. |
+| **B** | pointer present, the directory it names is gone | **Stop, and offer the repair in the same breath.** No write, no degraded teaching. |
+| **C** | directory present, remote unreachable | **Proceed normally.** Write to the local clone, commit, skip the push, and say in one line that it did not sync. |
+
+**State C is benign.** Offline is common and nothing about it is dangerous: the clone is the working cache, the commit is real, and the next session's `git pull --rebase` reconciles it. Per-topic pages mean there is nothing to conflict on, and an unpushed commit is not a lost one. The one honest requirement is **the one-line notice** — an unpushed record nobody mentioned is a surprise on the next host.
+
+**State B stops rather than degrades**, because it is the only state where writing would manufacture a **second record** — the failure that silently halves a learning history. And you stop rather than teach-without-saving because the fix is one command: re-clone from the private URL to the path the pointer names. Degraded teaching is the worse offer precisely because the good version is thirty seconds away. So it is a refusal *and* a repair, in one breath, in plain English:
+
+> Your record isn't where your setup points. Re-clone it and we'll pick up exactly where you left off.
+
+**One exception, learner-initiated only.** If they explicitly say *teach anyway, I know nothing will be saved*, oblige. You never choose that yourself — the same rule as scrap: obey the state, never infer it.
+
+### What earns a write
+
+- **A session where the learner engaged must write.** Silent no-write is the measured leak — one write in nine sessions before it was made explicit. The only session that legitimately writes nothing is one the learner scrapped.
+- **Only what the learner wrote about moves off `gap`.** A topic that was mentioned, offered on a menu, or explained at them was **not engaged** — mentioning is not engagement, and no page is created for it. It resurfaces the next time they ship something that touches it.
+- **`owned` requires that they said it back** in their own words. Anything less is recorded as asserted, with no model line, however well the session went. A status records *how* it was earned, so a topic skipped for time can never be misread as knowledge — dates alone never catch that. False ownership is the record lying; decay is merely the record being honest.
+- **A successful probe does not re-earn what was earned.** A rusty topic that comes back clean gains a touch and a date, and nothing else.
+- **Transcribe the model line, never author it.** If nobody has heard them explain it, it stays empty. An empty model line is information, not an omission to tidy up.
+- **Open reps are recorded, not lost.** Reps posed but unanswered ride on the topic page so the next session picks them up. Unanswered reps are spaced retrieval when recorded and a leak when not.
+
+**Scrap is learner-initiated only.** When they abandon a session, nothing is logged and the working tree is left clean. An abandoned session is the **cheapest** outcome for the record, not the messiest — and you never infer this state, never volunteer it, only ever obey it.
+
+**Wrap silently.** Never itemise the write back at the learner, never recite what they skipped, and never name a file, a status token or a field. The closing recap is a few short paragraphs of plain English: what landed, what it confirmed, what is waiting next time.
+
+**Concurrency safety** (the learner runs many sessions at once): read the exact section just before editing it; use exact-match edits, **never whole-file overwrite**; and prefer touching a topic's own page over anything shared. Everything two sessions would both want to change is **derived**, so it regenerates rather than merges — that is the layout doing the work, not the discipline.
 
 ## Cognitive dosage — protect the one deep block
 
 The learner's measured rhythm: one dense rubber-duck sitting ≈ 1–2h of reading + writing, and it spends the day's deep-learning capacity. That is normal cognition, not a defect — design the dose around it:
 
 - **One deep topic per sitting.** Teach wide if the material demands it, but drill deep on ONE topic; the rest get parked.
-- **Tier the reps:** exactly one **[core]** rep (the ownership-transfer teach-back) + the rest **[optional]**. A tired session legitimately ends after the core rep; optionals become `reps:` debt in the ledger row.
-- **WIP cap: ≤3 active foci.** When a new topic surfaces while foci are full, capture it as a one-line `[gap]` row — zero teaching — instead of opening it. Capturing is cheap; opening is spend.
+- **Tier the reps:** exactly one **core** rep (the ownership-transfer teach-back) + the rest optional. A tired session legitimately ends after the core rep; the optionals become open reps on the topic page.
+- **The WIP cap is a nudge, not a gate.** Active foci are derived, so there is no list to be full and nothing to enforce — a topic is active because its page says so. The boot prints the count against the cap (`ACTIVE (5) — cap is 3`); when it is over, prefer closing rep debt to opening a new topic. The reasoning is the part worth keeping: **capturing is cheap; opening is spend.**
 - **Answering rep-debt days later in a fresh session is the preferred move**, not a make-up: retrieval after partial forgetting builds stronger ownership than same-day completion.
 
 ## Plain English only — never leak the filing system
 
-The learner does **not** read the profile, the schema doc, the project artifacts, or any note you keep. **Everything they learn comes from what you say, in plain English.** Never surface to them: file paths, the profile's headers or status tags, internal log/section coordinates, or any private notation. Resolve it all to plain English + the raw evidence (the snippet, the error, the actual line). This is the filesystem-specific form of learn-with-reps' resolve-inline rule.
+The learner does **not** read the record, the schema doc, the project artifacts, or any note you keep. **Everything they learn comes from what you say, in plain English.** Never surface to them: file paths, the record's field names or status tokens, internal log/section coordinates, or any private notation. Resolve it all to plain English + the raw evidence (the snippet, the error, the actual line). This is the filesystem-specific form of learn-with-reps' resolve-inline rule.
 
 ## Compaction — one-line nudge
 
 If session context exceeds ~80k tokens, gently note it once and suggest compacting — the learner runs their own compaction workflow. Don't manage it beyond the nudge.
 
 
-## Housekeeping — load the SOP on demand
+## Housekeeping — load the runbook on demand
 
-Profile maintenance is a **separate workflow from mentoring**, and it has its own runbook: `profile-housekeeping.md` (sibling of this file). Load it when any of these is true — do not improvise the steps:
+Record maintenance is a **separate workflow from mentoring**, and it has its own runbook: `profile-housekeeping.md` (sibling of this file). Load it when any of these is true — do not improvise the steps:
 
-- an `[ops] COMPACTION-DUE` row appears in the boot index
-- a valve in `ref/profile-schema.md` trips (ledger >25KB or any row >60 words; Tier 3 >25 entries or file >700 lines)
-- the learner asks to retrospect, refactor, distill, or "housekeep" the profile
+- the boot's housekeeping line reports a backlog worth acting on, or **any broken anchor** — a broken anchor is the one genuine corruption, and the only counter that is not merely backlog
+- the learner asks to retrospect, refactor, distill, or "housekeep" the record
 - monthly, as routine
 
-It covers: measure (tier byte-decomposition, row-width distribution, read-shape audit across session transcripts) → diagnose (width drift vs length growth vs undisciplined readers vs write starvation — different fixes) → compact (archive first, then diet rows / roll up Tier 3) → patch governance (encode rules as index-visible `[ops]` rows) → verify → log the baseline. A full diet deserves its own session with a fresh context window; never tack it onto the end of a learning session.
+It covers: prune dead topics · merge duplicates · repair broken anchor edges · rewrite Level 0 in place · regenerate the index and re-measure. A full pass deserves its own session with a fresh context window; never tack it onto the end of a learning session. It is also the **only** session that edits Level 0.
 
-## For profile retrospective
+**No general-purpose documentation organiser is ever run over this tree**, and there is nothing to fork from one. The record has a schema by construction — fixed flat frontmatter and a generated index — so a generator that knows the schema strictly beats an organiser that has to infer one. More sharply: a codebase organiser's sort discipline deletes status, dates and sprint state as staleness, which is correct for a codebase and catastrophic here, because **the learner record *is* status.**
 
-When the user prompts to housekeeping retrospective and refactor / distill the profile, reach out for the profile schema at `ref/profile-schema.md` (sibling of this file) — and for the step-by-step runbook, `profile-housekeeping.md`.
+Backlog is not an emergency. The housekeeping line is one line at the bottom of the boot and is ignorable; only the broken-anchor count demands attention.

@@ -37,10 +37,10 @@ loaded it). This repo keeps only `PROFILE.template.md`.
 
 ## Operating rules
 
-- **Onboarding:** ripgrep-first. `rg '^### \['` on the resolved profile = the whole Topic Ledger; read Tier-1 Learner Core for who the learner is; hydrate 1–2 topic bodies on demand. Never full-read.
-- **Mentoring:** see `skills/learn-with-reps/SKILL.md`. Core rule — reading ≠ thinking; the learner thinks by writing. Show the shape, never the filled answer; ask, then wait.
-- **Profile writes:** inline at wrap, ~300–600 tokens. Advance touched topics `[gap]→[learning]→[owned]`; append one session entry; touch Tier-1 only for durable traits. Structure rules in `skills/learn-with-reps-gsd/ref/profile-schema.md`.
-- **Privacy:** the learner never reads the profile or any note; everything reaches them in plain English. The profile, `gsd-lite/`, `raw/`, `_archive/` are gitignored.
+- **Onboarding:** one call. The sidecar runs the boot script shipped beside it against the resolved record root; it emits Level 0 verbatim plus a fully derived digest (active / rusty / unverified). Hydrate 1–2 topic bodies on demand. Never full-read.
+- **Mentoring:** see `skills/learn-with-reps/SKILL.md`. Core rule — reading ≠ thinking; the learner thinks by writing. Show the shape, never the filled answer; ask, then wait. Probe before building on anything assumed owned; rank what to teach by adjacency to what is genuinely held.
+- **Record writes:** inline at wrap, ~300–600 tokens; pull --rebase immediately before the write. Only what the learner wrote about moves off `gap`, and `owned` requires they said it back in their own words. Structure rules in `skills/learn-with-reps-gsd/ref/profile-schema.md`.
+- **Privacy:** the learner never reads the record or any note; everything reaches them in plain English. The record, `gsd-lite/`, `raw/`, `_archive/` are gitignored.
 
 ## Lineage
 

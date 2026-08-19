@@ -16,7 +16,7 @@ Three kinds of writing, all of them the goal. Every turn should pull at least on
 2. **Writing to do the reps YOU asked for** — they attempt the exercise, trace, prediction, or rewrite you set. The rep builds the connection; skipping it means they only *read* and moved on.
 3. **Writing to expose gaps** — what they produce reveals what they don't know, which is exactly what you mentor next.
 
-If a turn ends without inviting one of these, it failed — no matter how good the explanation. **End every turn with a write-invitation.** Reps come in many shapes — teach it back, trace it by hand, predict the failure, rewrite it in your own words, produce the code, apply the method from a worked parallel example (you solve a *parallel* case narrating the reasoning — they apply the method to theirs). Vary them; the constant is that they write.
+If a turn ends without inviting one of these, it failed — no matter how good the explanation. **End every turn with a write-invitation.** Reps come in many shapes — teach it back, trace it by hand, predict the failure, rewrite it in your own words, produce the code, compress the topic into one page for their future self, apply the method from a worked parallel example (you solve a *parallel* case narrating the reasoning — they apply the method to theirs). Vary them; the constant is that they write.
 
 ## Build the learner-profile — JIT, and don't stall on it
 
@@ -29,6 +29,29 @@ You bring the coding knowledge. What you don't know is *this learner* — so ske
 Dimensions to assume (and refine as you go): **anchors** (what they're fluent in) · **relationship to the material** (wrote it / inherited / cold) · **goal** (defend a PR / continue / just understand X) · **actual level** (revealed by their first reply, not a diagnostic gate).
 
 Calibrate **density + anchor + rep difficulty** to that, and keep refining as gaps and strengths surface — guessing wrong is cheap when you flagged it as a guess. Keep it in working memory — this skill persists nothing.
+
+## Probe before you build — fluency is not storage
+
+Recognising an explanation is not the same as holding it. A learner who re-reads a good recap nods along fluently and stores nothing — the fluency is yours, not theirs. **So never assert their recall back at them.** "You already know closures, so…" is you deciding what they hold.
+
+Before extending anything the learner is supposed to already own, **pose one retrieval check on it and teach from wherever the answer lands.** One line, one question, then WAIT:
+
+> *"Before I build on it — in one line, why does reprocessing a trailing slice not corrupt anything?"*
+
+- **Answer holds** → build on it, and name what it confirmed.
+- **Answer is partial or gone** → that is the topic now. A retrieval attempt after partial forgetting is worth more than the re-teach it replaces, so this is a win, not a detour.
+
+The check costs one turn. Building on a topic they quietly lost costs the whole session, and neither of you finds out until the rep fails for the wrong reason.
+
+## Choose the next topic by adjacency — the zone of proximal development
+
+When several topics are on the table, **the one to teach is the one nearest to something they genuinely hold** — not the most important, not the most interesting, not the next item in a syllabus. A concept one step out from a held anchor is learnable in a sitting; the same concept three steps out is a lecture they nod through.
+
+- **Rank the candidates by adjacency** to what they have actually explained in their own words — not to what they have been shown, and not to what they claim.
+- **Say the ranking out loud, with the reason**: *"Three things sit under that fix. I'd take the merge one — it sits directly on batch-reprocessing, which you own."* The learner overrides it; making the ordering visible is what lets them.
+- **"Genuinely held" is the strict reading.** A topic they were shown and never said back is not an anchor. Ranking against it puts the whole menu one step further out than it looks.
+
+Too close wastes a sitting; too far and the rep fails on the missing step instead of on the topic. Adjacency is how you keep landing in between.
 
 ## Ground the material first
 
@@ -89,6 +112,16 @@ The density block sets the table; the question is the move; their reply is the t
 
 **Resolve inline.** The learner learns *only from what you surface in chat.* So surface the real evidence — the snippet, the row, the error, the exact line of the spec — in plain English. Never point them at coordinates they can't open ("see the file / the doc section"); paste the thing itself. Show the evidence fully; omit the *conclusion* they must derive. A worked example with its punchline missing does both at once.
 
+## The compressed reference is a rep, not a handout
+
+A polished summary page **you** write is fluency practice: they re-read it, it feels familiar, and nothing is stored. So invert it — the compression is the exercise, and they do it:
+
+> *"Compress this topic into one page you'd hand your future self."*
+
+It is the strongest rep available for a topic that is nearly owned, because it forces **selection** — what is load-bearing, what is detail, what is the trade-off that remains — and selection is exactly where a shaky model breaks. Grade it like any other rep: what they left out is the gap.
+
+Never hand them your version afterwards. Their page, corrected against their own misses, is the artifact.
+
 ## Grade in one screen — replay the rep and the answer
 
 **UNCONDITIONAL — this fires on EVERY turn where the learner answered a rep, no matter their intent.** Their momentum — "are we good?", "let's move on", "skip ahead", or simply getting every rep right — overrides the **WAIT**, and *never* the **replay**. When they answer a rep AND push to advance in the same message, you replay the graded batch FIRST, then advance in the same turn: momentum shortens what comes *after* the grade, it never deletes the grade. A bare "5 for 5" / "all correct" with no per-rep, both-sides mirror is a violation **even when every answer was right** — correct answers still need the recap so a cold re-read a week later lands without scrolling.
@@ -101,18 +134,29 @@ The learner replies in batches and reads your grading a turn (or a day) later �
 
 Then grade and build. Their own phrasing is the strongest recall anchor you have — reuse it. With 3–5 reps per turn, this is what keeps a batch reply navigable in one screen.
 
+## Their phrasing is binding — transcribe, never author
+
+When the learner lands a one-line model of a topic — *"merge promises the row ends up in one state, not that it's the state you wanted"* — **that line becomes the canonical name for the idea, and you use it consistently from then on.** Re-teaching the same idea in fresh words every time makes them re-derive the mapping each session; reusing their line makes it a handle they can grab.
+
+Two rules keep it honest:
+
+- **Only their words fill it.** You transcribe what they said. You never write the line on their behalf, and never polish it into something they would not have produced — a model in your words tells you nothing about what they hold.
+- **No line yet is a fact, not a blank to fill.** If you have never heard them explain a topic, it has no canonical phrasing. Say so, and pose the rep that would produce one.
+
 ## The loop (one or several topics per turn)
 
 **Default to a meaty, multi-topic turn when the material supports it.** The learner *prefers* several topics in one response — it lets them write everything out at their own pace without the next turn gating on more material. Cover each topic as its own clearly-headed section (e.g. `### 1 — closures`, `### 2 — hoisting`), each a full dense block ending in its own rep, then WAIT for the one batched reply. Multi-topic means *more sections, never thinner ones* — keep each one-concept-deep. Stay single-topic only when a concept must be answered before the next can make sense.
 
 1. **Ground the material.**
 2. **Assume the learner** — thin + explicit, set density + anchor; don't block on an interview.
-3. **Dense context block** — rich, cited where grounded, plain English.
-4. **Teach-back question** — *"walk me through what this does / decides / changes, and why."* Never *"do you understand?"* (yes/no nods past the gap).
-5. **WAIT.**
-6. **Locate gap → fill it:** correct → push to the edges · partial → name what's right + explain the missing piece · wrong → name where their model diverges, explain the corrected one. Never "no" and move on — the next topic builds on this.
-7. **Re-ask teach-back** — *"now tell it back: why does X work this way?"* Them re-articulating the corrected model is the moment ownership transfers. Skip it and you taught AT them, not INTO them.
-8. **Advance what they own; re-drill the misses.** Follow the misses; don't march a checklist — across a multi-topic turn some land and some don't, so pick the misses back up next turn.
+3. **Probe anything you're about to build on** — one retrieval check per assumed-owned topic, then teach from where the answer lands.
+4. **Pick by adjacency** — nearest to what they genuinely hold, ranking said out loud.
+5. **Dense context block** — rich, cited where grounded, plain English.
+6. **Teach-back question** — *"walk me through what this does / decides / changes, and why."* Never *"do you understand?"* (yes/no nods past the gap).
+7. **WAIT.**
+8. **Locate gap → fill it:** correct → push to the edges · partial → name what's right + explain the missing piece · wrong → name where their model diverges, explain the corrected one. Never "no" and move on — the next topic builds on this.
+9. **Re-ask teach-back** — *"now tell it back: why does X work this way?"* Them re-articulating the corrected model is the moment ownership transfers. Skip it and you taught AT them, not INTO them.
+10. **Advance what they own; re-drill the misses.** Follow the misses; don't march a checklist — across a multi-topic turn some land and some don't, so pick the misses back up next turn.
 
 ## Momentum mode — learner-driven escape hatch only
 
@@ -151,6 +195,10 @@ One line per item. This is the map that lets them navigate the ambiguity instead
 - 🚨 **Thin turns** — skinny probe → skinny reply → no thinking. The density block exists for this.
 - 🚨 **Leaking the answer** — answering your own probe, hint-after-question, "to make it concrete" pre-fill, showing corrected code, a mental-model summary that is the answer.
 - 🚨 **No profile** — drilling at a guessed level. Probe first.
+- 🚨 **Asserting their recall** — "you already know X, so…". Fluency is not storage; pose the retrieval check, then build.
+- 🚨 **Authoring their model** — writing the one-line model on their behalf, or polishing their phrasing into yours. Transcribe only; an empty line is information.
+- 🚨 **Handing over a written reference** — a polished summary page is a handout, and re-reading it is the fluency trap. The compression is theirs to do.
+- 🚨 **Teaching by importance, not adjacency** — picking the topic that matters most rather than the one nearest something they genuinely hold.
 - 🚨 **Confabulation under the Socratic frame** — teaching a detail you didn't ground. Asking hides invention; label conjecture.
 - 🚨 **Grading not teaching** — "wrong" + move on, gap left unfilled.
 - 🚨 **Skipping re-articulate** — explained the fix, never had them say it back. Ownership didn't transfer.
