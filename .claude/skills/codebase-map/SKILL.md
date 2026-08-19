@@ -21,9 +21,9 @@ something is implemented.
 
 | page | covers | verified |
 |---|---|---|
-| [rebuild-to-own — the graded rebuild](../../../docs/architecture/rebuild-to-own.md) | how a learner is taught a codebase they did not write, and why git is doing the work | 2026-08-19 |
+| [The graded rebuild](../../../docs/architecture/rebuild-to-own.md) | how a learner is taught a codebase they did not write, and why git is doing the work | 2026-08-19 |
 | [The learner record](../../../docs/architecture/the-learner-record.md) | where the learner's data actually lives, why it is not in this repo, and what a session is allowed to read of it | 2026-08-19 |
-| [The blind half and the sidecar](../../../docs/architecture/the-two-halves.md) | which skill is allowed to touch the filesystem, and why the mentoring rules live somewhere else | 2026-08-19 |
+| [The portable boundary](../../../docs/architecture/the-portable-boundary.md) | which half of the skill is allowed to touch the filesystem, and what proves it | 2026-08-19 |
 
 <!-- END GENERATED INDEX -->
 

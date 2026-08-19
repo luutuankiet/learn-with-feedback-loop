@@ -1,32 +1,47 @@
----
-name: rebuild-to-own
-description: Turn a codebase you own on paper but never wrote into a graded, branch-per-topic rebuild curriculum. The agent scrapes modules into scaffolds on exercise branches; the learner rebuilds them; the agent grades the diff against the shipped reference. Modes - TAILOR (survey the code, produce the menu), TEACH (scaffold one topic and deliver the lesson), GRADE (review the learner's commit). One syllabus per repo, always. Runs on learn-with-reps + its profile sidecar.
-user-invocable: true
----
+# Rebuild to own — a graded, branch-per-topic track
 
-# rebuild-to-own
+Reference for `learn-with-reps`, loaded per its routing block: **only when the
+learner wants to rebuild a codebase they own on paper but never wrote, and a git
+repo is reachable.**
 
-**Contract.** Point this at a repo the learner approved specs for but never implemented. It turns that repo into an exercism-style track: every topic is a branch, every branch is a rebuild exercise, and the shipped implementation - always one `git show` / `git diff` away in the same object store - is the answer key. Success = the learner's committed code converges on the reference, and they can defend every divergence.
+**Contract.** Point this at such a repo. It turns that repo into an exercism-style
+track: every topic is a branch, every branch is a rebuild exercise, and the shipped
+implementation - always one `git show` / `git diff` away in the same object store -
+is the answer key. Success = the learner's committed code converges on the
+reference, and they can defend every divergence.
 
-**Where it sits.** A comprehension-mode mentor skill proves the learner can *explain* code. This skill proves they can *produce* it. Both run on the learn-with-reps discipline.
+**Where it sits.** The mentoring discipline proves the learner can *explain* code.
+This file proves they can *produce* it. It changes exactly ONE thing about the reps
+discipline: the rep's output is **committed code in a worktree** instead of prose in
+chat, which makes the graded evidence a diff. Everything else about the teaching
+turn is the discipline's, unmodified.
 
-**How it was designed + the end-to-end flows:** `DESIGN.md`, sibling of this file - artifact graph, the three modes as flow diagrams, decisions with their rejected alternatives, the invariants. Read it when changing how the rig works, or when a situation isn't covered here. Do NOT read it to run a normal session; this file is self-sufficient for that.
+**How it was designed + the end-to-end flows:** `rebuild-design.md`, sibling of this
+file - artifact graph, the three modes as flow diagrams, decisions with their
+rejected alternatives, the invariants. Read it when changing how the rig works, or
+when a situation isn't covered here. Do NOT read it to run a normal session; this
+file is self-sufficient for that.
 
-## Load order (NON-NEGOTIABLE - every mode, every session)
+## What this presumes
 
-1. **learn-with-reps** - the mentoring discipline (dense turns, first-principles teaching, reps, one-screen grading, momentum rules). This skill never restates it; it invokes it.
-2. **learn-with-reps-gsd** - the profile sidecar. Its load trigger is *"learn-with-reps active AND filesystem access"*, which this skill ALWAYS satisfies: it is git-native, so a filesystem is guaranteed. It owns ALL profile read/write mechanics - the ripgrep boot, the tier grammar, the wrap contract, the rollup valves. This skill never re-specifies them.
-3. **The learner record** - resolved by the sidecar from the stated marker in the user-scope instruction file, which gives back a **root directory, not a file**. A track's `learn/CHARTER.md` may pin a different one, and that pin wins. No marker (new learner) - the record has not been set up on this machine; point them at the sidecar's `bin/install.sh` and stop. **Never seed one from here.** Read it per the sidecar's discipline, never whole.
-4. **Establish the syllabus** (next section) - two git commands, before any survey, menu, or lesson.
-5. Then dispatch: TAILOR / TEACH / GRADE.
+A git repo, therefore a filesystem, therefore the learner record is available too -
+this track always satisfies the record's precondition, so boot it. The record owns
+ALL record read/write mechanics; this file never re-specifies them.
 
-A session that teaches without 1+2 loaded is a protocol violation - the premise is calibrated mentoring, and calibration lives in those two.
+**The boundary (they do not overlap - they compose):** the discipline owns **how a
+turn is built** - density, the rep block, the WAIT, the one-screen grade, momentum
+rules, psychological safety. This file owns **what is being learned and which
+artifacts move** - topic selection, branches, scaffolds, the diff ladder, the docs.
+Where they seem to touch, that line decides.
 
 **Conflict resolution (the only two that exist):**
-- The sidecar hard-codes ONE profile path as its example. **CHARTER wins** - it names the path for THIS track, and a learner may keep tracks and profile on different hosts.
-- The sidecar's cognitive-dosage rules (one deep topic per sitting, WIP cap, tiered reps) govern the *session*; this skill's `sittings:N` on a topic row is a *planning estimate*. When they disagree, the sidecar wins - split the topic across sittings rather than overrun the dose.
-
-**The boundary with learn-with-reps (they do not overlap - they compose):** learn-with-reps owns **how a turn is built** - density, the rep block, the WAIT, the one-screen grade, momentum rules, psychological safety. This skill owns **what is being learned and which artifacts move** - topic selection, branches, scaffolds, the diff ladder, the docs. Where they seem to touch, that line decides. This skill changes exactly ONE thing about the reps discipline: the rep's output is **committed code in a worktree** instead of prose in chat, which makes the graded evidence a diff. Everything else about the teaching turn is learn-with-reps', unmodified.
+- A track's `learn/CHARTER.md` may pin a record root different from the machine's
+  stated address. **CHARTER wins** - a learner may keep tracks and record on
+  different hosts.
+- The record's cognitive-dosage rules (one deep topic per sitting, WIP cap, tiered
+  reps) govern the *session*; this file's `sittings:N` on a topic row is a *planning
+  estimate*. When they disagree, dosage wins - split the topic across sittings
+  rather than overrun the dose.
 
 ## One syllabus per codebase - the standing invariant
 
@@ -89,21 +104,23 @@ Two consequences:
 1. **The scaffold lands BEFORE the lesson, in the same turn.** A lesson ending with "now go create a worktree" has handed the learner busywork and broken the flow. When TEACH opens a topic, it scaffolds first and teaches second, and the closing line names a worktree path that already exists on disk with the stubs in it.
 2. **No agent writes code on an exercise branch after the scaffold commit.** That commit is the boundary; everything after it must be the learner's keystrokes or the graded diff measures nothing. A stuck learner gets taught, never patched.
 
-## Teach first principles - the core mandate
+## First principles, in a rebuild - the delta
 
-The learner is a **builder**: the goal is to re-derive the code, not recall it. A learner who owns the problem can reconstruct the solution; a learner who memorized the solution owns nothing. So every topic is taught in this order, BEFORE any stub is shown:
+The discipline's first-principles ladder is mandatory here and is not restated. Three
+things are specific to a rebuild:
 
-1. **The problem that existed first.** What broke, what hurt, what people did instead. The world before this component - in the industry generally, and in THIS repo specifically (why was this file created at all?).
-2. **The origin / history.** Who built the thing this pattern comes from, what it replaced, what it killed. Framework-level history where the concept is framework-shaped; commit-level history where the answer is in this repo's own log (`git log --follow <file>` is the primary source, and the reference commits are readable evidence).
-3. **The design pressures that produced THIS shape.** Why the reference looks the way it does rather than the obvious alternative. Name the alternative explicitly.
-4. **The synergy - how it wires to its neighbors.** Never teach a component as an island. Name the seam (what crosses it: a cookie, a header, a prop, a return contract), the direction of dependence, and **what breaks downstream if the seam changes**. The rebuild is only real if the learner knows what their module owes the modules around it.
-5. **The trade-off that remains.** What the design gave up - so the learner can judge when NOT to use it.
+- **The history is in this repo's own log.** `git log --follow <file>` is the primary
+  source for step 2, and the reference commits are readable evidence. Prefer reading it
+  over recalling framework-level history, and say which one you used.
+- **Steps 1 and 4 are repo-local as well as general.** Why was *this file* created at
+  all; what does *this module* owe the modules around it. A rebuild is only real if the
+  learner knows what breaks downstream when their seam changes.
+- **Where the material is kept:** the topic brief's `## Lineage` and `## Synergy`
+  sections, researched when the brief is written and refreshed at TEACH.
 
-Only then the exercise. **Proportionality** (per learn-with-reps): the full arc is mandatory for foundational, design-shaped concepts; a surface detail (a config key, a flag) gets a one-line why. Don't pad trivia into epics.
-
-**Where it comes from:** the topic brief's `## Lineage` and `## Synergy` sections carry this material, researched when the brief is written and refreshed at TEACH. Where the true history isn't known, label conjecture - never invent history.
-
-**The rebuild-specific payoff:** a learner who was taught the pressure can produce a *defensible divergence* from the reference. That is the highest-value grading outcome the rig can produce, and it's unreachable if the topic was taught as "here's the API."
+**The payoff:** a learner who was taught the design pressure can produce a *defensible
+divergence* from the reference. That is the highest-value grading outcome the rig can
+produce, and it is unreachable if the topic was taught as "here's the API."
 
 ## Reading the learner's work - diff-first, grep-second, full-read never
 
@@ -241,9 +258,12 @@ A topic spans three phases. They can share one session, but the phases are what 
 
 **The wrap is never optional.** However a sitting ends - graded, abandoned, or out of runway - the closing turn writes MAP status + LEDGER entry + the profile wrap-write per the sidecar's contract. A sitting that ends without those has lost the session.
 
-## Plain English to the learner
+## What the learner may read
 
-The `learn/` docs, status tags, and this skill's machinery are the AGENT's filing system. Teaching happens in chat: paste the real evidence (the snippet, the diff hunk, the error), never coordinates ("see the map doc") or status tags. The learner MAY read `learn/` - it lives in their repo - but no lesson may REQUIRE it.
+Per the discipline, teaching happens in chat: paste the real evidence (the snippet, the
+diff hunk, the error), never coordinates ("see the map doc") or status tags. The one
+addition here: the learner MAY read `learn/` - it lives in their repo - but **no lesson
+may REQUIRE it.**
 
 ## Anti-patterns
 
@@ -279,8 +299,10 @@ The whole point of this skill is that the learner did not write the target codeb
 
 ## Distribution
 
-The skill ships in the **learn-with-feedback-loop repo** (`skills/rebuild-to-own/`), alongside the mentoring discipline and its record sidecar - never inside the target codebase. A teammate installs the three skills into their own agent, runs the sidecar's `bin/install.sh` once to put their learner record on the machine, then runs TAILOR against whatever repo they want to own.
-
-**Per-user pointers to active tracks do NOT live beside this file.** The skill arrives replicated - through a plugin cache, a copy, or a symlink - so its location differs on every machine and may be read-only. Anything written next to it is per-host state pretending to be shared state, and the first host that cannot honour the convention loses it silently.
-
-`pilots.md` lives **in the learner's record**, at `<record root>/pilots.md` - the root the sidecar resolves from the stated marker, which is the one place on any machine that is private, writable, and the same across hosts. It is also where the tracks belong on the merits: a rebuild track is learner state, not skill state. `templates/pilots.md` is still its seed; `templates/` also carries the four `learn/` doc skeletons a new track is stamped out from.
+This file ships inside the `learn-with-reps` skill, never inside the target codebase. A
+teammate installs that one skill into their own agent, runs `bin/install.sh` once to put
+their learner record on the machine, then asks for a survey of whatever repo they want to
+own. Per-user pointers to active tracks (host, repo path, syllabus worktree) live in a
+`pilots.md` kept in the user's own space - it is per-user state, not part of the template.
+`templates/track/` carries the `learn/` doc skeletons a new track is stamped out from, and
+`templates/track/pilots.md` is the seed for the pointer file.

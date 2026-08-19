@@ -28,7 +28,7 @@
 set -euo pipefail
 
 HERE="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
-TEMPLATE="$(dirname -- "$HERE")/template"
+TEMPLATE="$(dirname -- "$HERE")/templates/record"
 
 DEFAULT_PATH="$HOME/.learner-record"
 AGENTS_FILE="${LEARN_AGENTS_FILE:-$HOME/.claude/CLAUDE.md}"

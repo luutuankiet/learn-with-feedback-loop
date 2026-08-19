@@ -1,6 +1,6 @@
 # The learner record — schema & philosophy
 
-This documents the structure and the *reasoning* behind the learner record, so a future refactor starts from decisions already made rather than re-deriving them. The mentoring sidecar (`learn-with-reps-gsd`) points here; it does not embed this.
+This documents the structure and the *reasoning* behind the learner record, so a future refactor starts from decisions already made rather than re-deriving them. The record reference (`record.md`, beside this file) points here; it does not embed this.
 
 The record is a **tree**, not a file: a hand-written Level 0, one page per topic, and an index generated from those pages. Nothing in it is maintained twice.
 

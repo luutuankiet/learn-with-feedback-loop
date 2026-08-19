@@ -13,9 +13,11 @@ gaps, phrasings, preferences — so a session resumes where the last one stopped
 - **Templates only — structure ships, instances never do.** A filled-in learner
   record, a `pilots.md`, a tailored syllabus live in the user's private space and
   are gitignored here. What is committed must be useful to a stranger.
-- **`learn-with-reps` is filesystem-blind on purpose.** Everything touching disk
-  lives in the sidecar; a path added to the generic skill breaks the portability
-  the split exists for.
+- **`SKILL.md` is filesystem-blind on purpose.** Everything touching disk lives in
+  a reference file under `ref/`, loaded only when its precondition holds. The
+  always-loaded half may name its own bundled relative references — inert when
+  absent — but never an absolute path, a home directory, or the record's address.
+  `bin/smoke.sh` asserts this; do not weaken the assertion to make an edit pass.
 - **The learner's record is not in this repository** and never will be. It is a
   tree in the learner's own private repo, reached by a pointer.
 - **The learner never reads the record, or any note about them.** Everything
@@ -24,23 +26,28 @@ gaps, phrasings, preferences — so a session resumes where the last one stopped
 ## Layout
 
 ```
-skills/learn-with-reps/       the generic, filesystem-blind mentoring discipline
-skills/learn-with-reps-gsd/   sidecar — reads and writes the learner record
+skills/learn-with-reps/       the one skill — router + the mentoring discipline
+  SKILL.md                    always loaded; names no path, no storage
+  ref/record.md               the learner record: boot, harvest, the wrap-write
+  ref/rebuild.md              graded rebuild over a repo the learner never wrote
+  ref/rebuild-design.md       the rebuild's rationale and decision log
+  ref/profile-schema.md       the record's locked structure, and why
+  ref/profile-housekeeping.md the maintenance runbook, loaded on demand
   bin/boot.sh                 the record's one-call session opening
   bin/install.sh              one-per-machine setup: clone, seed, state the address
-  template/                   the skeleton a brand-new record is seeded from
-  ref/profile-schema.md       the record's locked structure, and why
-  profile-housekeeping.md     the maintenance runbook, loaded on demand
-skills/rebuild-to-own/        graded rebuild over a repo the learner never wrote
-  DESIGN.md                   its rationale and decision log
-  templates/                  the syllabus docs a track is stamped from
+  templates/record/           the skeleton a brand-new record is seeded from
+  templates/track/            the syllabus docs a rebuild track is stamped from
 scripts/gen-docs-index.sh     regenerates every index here
 ```
+
+The two reference files under `ref/` were separate skills until they were merged;
+`docs/adr/` records why. Add a capability that needs a disk as a new `ref/` page
+and a row in the router, never as prose in `SKILL.md`.
 
 No build step and no linter — this is markdown and bash. Two checks exist:
 
 ```sh
-skills/learn-with-reps-gsd/bin/smoke.sh   # 24 assertions over the boot script
+skills/learn-with-reps/bin/smoke.sh       # 34 assertions: boot, install, the boundary
 scripts/gen-docs-index.sh --check         # non-zero when a docs index is stale
 ```
 

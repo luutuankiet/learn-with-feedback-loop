@@ -1,14 +1,13 @@
----
-name: learn-with-reps-gsd
-description: Sidecar for learn-with-reps. To be loaded whenever learn-with-reps is invoked in a session.
-user-invocable: true
----
+# The learner record
 
-# learn-with-reps-gsd
+Reference for `learn-with-reps`, loaded per its routing block: **only when this
+session can reach a filesystem and the user-scope instruction file carries a
+record address.** Everything that touches a disk on the learner's behalf is
+specified here and nowhere else.
 
-Sidecar to **learn-with-reps**. That skill is filesystem-blind by design. This one adds the **persistent learner record** when the session can reach the filesystem.
-
-**Load trigger (lives HERE, never in learn-with-reps):** when `learn-with-reps` is active AND this session has filesystem access, load this skill and boot the record before drilling. learn-with-reps stays blind — the awareness that a record exists is this skill's job, so the generic skill remains portable to any environment.
+If either precondition fails, this file is simply not loaded, and the mentoring
+discipline runs without a record. Never mention to the learner a record you
+could not read.
 
 ## The record
 
@@ -131,10 +130,6 @@ The learner's measured rhythm: one dense rubber-duck sitting ≈ 1–2h of readi
 - **Tier the reps:** exactly one **core** rep (the ownership-transfer teach-back) + the rest optional. A tired session legitimately ends after the core rep; the optionals become open reps on the topic page.
 - **The WIP cap is a nudge, not a gate.** Active foci are derived, so there is no list to be full and nothing to enforce — a topic is active because its page says so. The boot prints the count against the cap (`ACTIVE (5) — cap is 3`); when it is over, prefer closing rep debt to opening a new topic. The reasoning is the part worth keeping: **capturing is cheap; opening is spend.**
 - **Answering rep-debt days later in a fresh session is the preferred move**, not a make-up: retrieval after partial forgetting builds stronger ownership than same-day completion.
-
-## Plain English only — never leak the filing system
-
-The learner does **not** read the record, the schema doc, the project artifacts, or any note you keep. **Everything they learn comes from what you say, in plain English.** Never surface to them: file paths, the record's field names or status tokens, internal log/section coordinates, or any private notation. Resolve it all to plain English + the raw evidence (the snippet, the error, the actual line). This is the filesystem-specific form of learn-with-reps' resolve-inline rule.
 
 ## Compaction — one-line nudge
 
