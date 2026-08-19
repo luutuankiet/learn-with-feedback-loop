@@ -94,7 +94,10 @@ learn-with-feedback-loop
 
 PLAIN ENGLISH, ALWAYS. Never show the learner a slug, a status word, a date, a
 field name or a path from this card, and never quote it into anything published
-— a commit message, a pull request, an issue, a comment, a file.
+— a commit message, a pull request, an issue, a comment, a file. A slug is easy
+to leak by quoting it as if it were a phrase: say what the topic IS, never what
+it is filed as. Not "the retry-backoff question" — "how long to wait before
+trying again".
 
 LOADING THE SKILL STAYS DELIBERATE. The nudge is an offer; only if they accept
 do you load the mentoring skill (learn-with-feedback-loop:learn) and open a real
