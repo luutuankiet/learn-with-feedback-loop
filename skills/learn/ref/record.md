@@ -64,7 +64,9 @@ Then **hydrate one or two topic bodies by name**, on demand, and nothing else. T
 | `boot.sh <root> --card` | the session-start name card — see below. Read-only, and never regenerates the index |
 | `session-card.sh` | what the session-start hook runs: the card plus its nudge rules, emitted as hook JSON into the agent's context. `--text` prints the same payload plainly |
 
-Predicate terms: `all` · `gap` / `learning` / `owned` · `rusty` · `unverified` · `active` · `track=<slug>` · `anchor=<slug>` · `earned_by=<value>` · `last>Nd` / `last<Nd`.
+Predicate terms: `all` · `gap` / `learning` / `owned` · `rusty` · `unverified` · `active` · `broken-anchor` · `track=<slug>` · `anchor=<slug>` · `earned_by=<value>` · `last>Nd` / `last<Nd`.
+
+`broken-anchor` is the only term judged against the whole record rather than the row: it selects pages whose `anchor` names a page that does not exist. It is the drill-down behind the boot's broken-anchor count.
 
 ### The name card — who, for a session that never asked
 

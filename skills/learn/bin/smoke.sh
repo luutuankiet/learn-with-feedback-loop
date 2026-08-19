@@ -244,6 +244,21 @@ check "a predicate ANDs its terms" \
 check "an unknown term is refused" \
   "$($BOOT "$R" --query 'wat' >/dev/null 2>&1; echo $?)" "2"
 
+# The runbook's urgent trigger. `broken-anchor` is the only term judged against
+# the whole record rather than the row, so it is the only one that can be broken
+# by a change to how the scan is read -- and the count it reports must be the
+# same number the boot's warning line prints, or the two disagree in front of
+# the maintainer at the one moment either is authoritative.
+check "broken-anchor names the page carrying the dangling edge" \
+  "$($BOOT "$R" --query 'broken-anchor' | awk 'NR > 1 && /^[a-z]/ {print $1}')" \
+  "partition-pruning"
+check "broken-anchor agrees with the boot's warning count" \
+  "$($BOOT "$R" --query 'broken-anchor' | awk '$2 == "of" {print $1}')" "1"
+# Reading the scan twice must not double the denominator.
+check "the ledger counts every topic once" \
+  "$($BOOT "$R" --query all | awk '$2 == "of" {print ($1 == $3 ? "equal" : $1 "!=" $3)}')" \
+  "equal"
+
 echo "card"
 #
 # The card is the shipping session's payload: the marked spans of Level 0 plus
