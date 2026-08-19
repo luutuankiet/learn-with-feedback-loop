@@ -62,6 +62,7 @@ Then **hydrate one or two topic bodies by name**, on demand, and nothing else. T
 | `boot.sh <root> --query <predicate>` | a filter over the same table — terms ANDed, e.g. `'owned & last>60d'`, or `all` for the full ledger |
 | `boot.sh <root> --check` | exits non-zero when the generated index is stale, and writes nothing |
 | `boot.sh <root> --card` | the session-start name card — see below. Read-only, and never regenerates the index |
+| `session-card.sh` | what the session-start hook runs: the card plus its nudge rules, emitted as hook JSON into the agent's context. `--text` prints the same payload plainly |
 
 Predicate terms: `all` · `gap` / `learning` / `owned` · `rusty` · `unverified` · `active` · `broken-anchor` · `track=<slug>` · `anchor=<slug>` · `earned_by=<value>` · `last>Nd` / `last<Nd`.
 
@@ -95,6 +96,21 @@ empties, everything keeps working, and the guidance just gets worse with nothing
 to announce it. A missing marker is announced instead. Housekeeping is the only
 writer of Level 0, so it is also the only maintainer of those markers —
 `profile-housekeeping.md` carries the step.
+
+**The card is delivered by a session-start hook, and delivery is opt-in
+structurally.** `<skill dir>/bin/session-card.sh` is what the hook runs: it reads
+the address, renders the card, and hands it to the **agent's context** — never to
+the learner's screen. Nothing registers it except the setup script below, so a
+machine that never ran setup has no hook at all: nothing to fire and nothing to
+fail. It never blocks, never asks a question that halts a turn, and emits nothing
+when there is no address, when the record is gone, or when anything else goes
+wrong. Deleting the marked block turns the whole thing off in one edit.
+
+**A card in context is not permission to mentor.** It carries its own rules, and
+they are the ones to follow: speak only when the session's work actually touched
+something on the card, name what triggered it, say it in plain English in one
+rendered block, and treat it as an offer. This skill's body loads only if the
+learner accepts.
 
 **Setup is a sibling script, run once per machine.** `<skill dir>/bin/install.sh <private-git-url> [path]` clones the record, seeds it from `template/` if the remote is empty, writes the marker, and boots once to prove it reads. `install.sh --where` prints the recorded path without changing anything, which is how you check whether this machine is set up. **The URL is always an argument** — this script ships publicly, so a private remote inside it would ship with it.
 

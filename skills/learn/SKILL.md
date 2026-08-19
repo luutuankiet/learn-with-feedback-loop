@@ -1,6 +1,6 @@
 ---
 name: learn
-description: Mentor the user on any learning topic through dense, Socratic, write-to-think reps. Optionally persists a learner record across sessions, and can run a graded branch-per-topic rebuild over a codebase the learner never wrote - both only when a filesystem is reachable.
+description: Mentor the user on any learning topic through dense, Socratic, write-to-think reps. Optionally persists a learner record across sessions, and can run a graded branch-per-topic rebuild over a codebase the learner never wrote - both only when a filesystem is reachable. Also the answer when someone asks how their learning could be tracked across sessions, or where a learner card in an ordinary session came from: the record and the session-start card that samples it are set up once per machine by this skill's installer, and a machine that never opted in runs nothing.
 user-invocable: true
 ---
 

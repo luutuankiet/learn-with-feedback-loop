@@ -120,6 +120,30 @@ announce it. A missing marker is announced instead. The monthly housekeeping
 pass is the only writer of Level 0 and therefore the only maintainer of the
 markers.
 
+## How the card reaches a session that never asked for it
+
+A session-start hook runs `skills/learn/bin/session-card.sh`, which reads the
+address from the marked block, renders `boot.sh --card`, wraps it with the rules
+a nudge has to obey, and returns it as the hook protocol's **context** field —
+never its user-facing one. That keeps the standing rule that the learner never
+reads a status token, a slug or a date about themselves.
+
+Opting in is **structural**. The installer is the only thing that registers the
+hook, and it does so in the same act that writes the address, so a machine that
+never ran it has no hook at all — nothing to fire, nothing to fail. Deleting the
+marked block turns the whole thing off in one edit, because the hook reads the
+address through it and emits nothing without one. Every other failure — a record
+that has moved, a boot that errors — is also silence, since a session start is
+the worst moment to hand somebody a stack trace about a system they are not
+using.
+
+What gets registered is a small generated resolver at a fixed path, not the
+skill's own path: the plugin is cached per source commit, so the skill directory
+moves on every update, and a hook pinned to it would report a missing command
+forever after. `docs/adr/0005-the-session-start-hook-is-the-import-that-was-rejected.md`
+carries the reasoning, including why this is the import the address decision
+turned down.
+
 **The general rule:** state that grows without bound cannot be loaded eagerly, so
 the entry point has to be a query rather than a file. Once the entry point is a
 query, everything derivable should be derived, because the query is where the

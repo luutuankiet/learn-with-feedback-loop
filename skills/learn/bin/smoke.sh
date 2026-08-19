@@ -356,6 +356,18 @@ check "an empty record boots rather than failing" \
   printf '# notes\n\nprose that was here first.\n' > "$LEARN_AGENTS_FILE"
   git init -q --bare "$WORK/remote.git"
 
+  # Opting in is structural: the hook is registered by this script and by
+  # nothing else, so a machine that never ran it has no hook to fire and none
+  # to fail. The settings file starts with a key of its own, because merging
+  # into a file somebody else owns lines of is the risky half.
+  SETTINGS="$HOME/.claude/settings.json"
+  export LEARN_SETTINGS_FILE="$SETTINGS"
+  printf '{\n  "a-setting-that-was-here-first": true\n}\n' > "$SETTINGS"
+  check "a machine that never opted in has no hook at all" \
+    "$(grep -c 'SessionStart' "$SETTINGS")" "0"
+  check "the card says nothing before there is an address" \
+    "$("$HERE/session-card.sh" 2>&1 | wc -c | tr -d ' ')" "0"
+
   check "no URL is a usage error, not a guess" \
     "$($INSTALL >/dev/null 2>&1; echo $?)" "2"
   check "no URL writes no marker" \
@@ -386,6 +398,100 @@ check "an empty record boots rather than failing" \
     "$(grep -c 'learn-with-feedback-loop:record' "$LEARN_AGENTS_FILE")" "2"
   check "prose around the marker survives" \
     "$(grep -c 'prose that was here first' "$LEARN_AGENTS_FILE")" "1"
+
+  # ------------------------------------------------------- the session card ---
+  #
+  # The delivery half. Its whole design is about what it does NOT do on a
+  # machine that never asked: no registration, no output, no failure. Every one
+  # of those is silent when it breaks, so every one of them is asserted here.
+
+  echo "session card"
+  CARDHOOK="$HERE/session-card.sh"
+  [ -x "$CARDHOOK" ] || bad "session-card.sh is not executable"
+
+  RESOLVER="$HOME/.claude/hooks/learn-with-feedback-loop-card.sh"
+  check "installing registers a hook at a path that does not move" \
+    "$([ -x "$RESOLVER" ] && echo registered || echo absent)" "registered"
+  check "the settings file names the resolver" \
+    "$(grep -c "learn-with-feedback-loop-card" "$SETTINGS")" "1"
+  check "re-running does not stack a second registration" \
+    "$(grep -c "learn-with-feedback-loop-card" "$SETTINGS")" "1"
+  check "settings that were already there survive" \
+    "$(grep -c 'a-setting-that-was-here-first' "$SETTINGS")" "1"
+
+  # The record cloned above is the template seed, so give it something to say.
+  cat >> "$HOME/rec/AGENTS.md" <<'EOF'
+
+<!-- BEGIN CARD -->
+**The mission.** Stop being the person who can fix it but not explain it.
+<!-- END CARD -->
+EOF
+  cat > "$HOME/rec/topics/retry-semantics.md" <<EOF
+---
+status: learning
+track: services
+earned_by: asserted
+reps: 1/3
+open_reps: [trace-a-retry]
+touches: 2
+last: $(ago 1)
+seen_in:
+  - the queue consumer rewrite
+---
+
+# retry-semantics
+EOF
+
+  HOOKOUT="$("$RESOLVER")"; HOOKRC=$?
+  check "the hook exits clean" "$HOOKRC" "0"
+  check "the hook emits one line of hook JSON" \
+    "$(printf '%s\n' "$HOOKOUT" | wc -l | tr -d ' ')" "1"
+  # Context, never the screen: the protocol has a field for each, and putting
+  # the card on the screen would break the standing rule that the learner never
+  # reads a status token, a slug or a date about themselves.
+  check "the payload goes to context and not to the screen" \
+    "$(printf '%s\n' "$HOOKOUT" | grep -c '"additionalContext"')" "1"
+  check "nothing is addressed to the learner" \
+    "$(printf '%s\n' "$HOOKOUT" | grep -c 'systemMessage')" "0"
+  check "the payload carries the card" \
+    "$(printf '%s\n' "$HOOKOUT" | grep -c 'Stop being the person')" "1"
+  check "the payload carries the trigger rule that keeps it from nagging" \
+    "$(printf '%s\n' "$HOOKOUT" | grep -c 'No trigger, no')" "1"
+  check "a row says when a topic was never said back" \
+    "$("$CARDHOOK" --text | grep -c 'never-said-back')" "1"
+
+  # Opting out is one edit to the block that opted in. The hook may still be
+  # registered -- it finds no address, says nothing, and exits clean.
+  cp "$LEARN_AGENTS_FILE" "$WORK/agents.keep"
+  : > "$LEARN_AGENTS_FILE"
+  check "no address means no output at all" "$("$RESOLVER" | wc -c | tr -d ' ')" "0"
+  check "no address is still a clean exit" "$("$RESOLVER" >/dev/null 2>&1; echo $?)" "0"
+  cat "$WORK/agents.keep" > "$LEARN_AGENTS_FILE"
+
+  # A record whose directory has gone is the one failure worth putting into
+  # context -- the repair belongs to a mentoring session, and the danger is a
+  # second record being seeded by something that meant well.
+  mv "$HOME/rec" "$HOME/rec.away"
+  GONE="$("$RESOLVER")"
+  check "a missing record is still a clean exit" \
+    "$("$RESOLVER" >/dev/null 2>&1; echo $?)" "0"
+  check "a missing record is reported to the agent, not repaired" \
+    "$(printf '%s\n' "$GONE" | grep -c 'NOT ON THIS MACHINE')" "1"
+  check "a missing record seeds nothing" \
+    "$([ -e "$HOME/rec" ] && echo seeded || echo untouched)" "untouched"
+  mv "$HOME/rec.away" "$HOME/rec"
+
+  # The plugin is cached per source commit, so the directory the skill lives in
+  # is gone after every update. The resolver has to survive that, and survive
+  # the plugin being removed outright, without ever reporting a broken command.
+  STALE="$WORK/stale-resolver.sh"
+  sed -e "s|^BIN=.*|BIN=\"$WORK/gone/skills/learn/bin\"|" \
+      -e "s|^ROOT=.*|ROOT=\"$WORK/gone\"|" "$RESOLVER" > "$STALE"
+  chmod +x "$STALE"
+  check "a resolver whose skill directory vanished exits clean" \
+    "$("$STALE" >/dev/null 2>&1; echo $?)" "0"
+  check "a resolver whose skill directory vanished says nothing" \
+    "$("$STALE" 2>/dev/null | wc -c | tr -d ' ')" "0"
 
   # The one that matters: a second machine cloning the SAME remote must adopt
   # the existing record, never seed a rival one.

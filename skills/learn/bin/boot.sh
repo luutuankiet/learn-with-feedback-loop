@@ -290,8 +290,13 @@ if [ "$MODE" = card ]; then
     echo "    pass adds them; it is the only writer of that page."
   fi
 
+  # The status column carries `never-said-back` when the topic was never
+  # explained aloud. It is the one field of the digest's judgement the card
+  # cannot derive for itself, and the thing a nudge most needs to know: a topic
+  # that has only ever been read at the learner is not safe to build on, however
+  # recently it was touched.
   awk -F'\t' -v OFS='\t' -v d="$CARD_DAYS" '$12 <= d {
-      print $12, $1, $3, $2, $7 "/" $8, $12 "d", ($13 == "" ? "-" : $13)
+      print $12, $1, $3, ($4 == "asserted" ? $2 " · never-said-back" : $2), $7 "/" $8, $12 "d", ($13 == "" ? "-" : $13)
     }' "$SCAN" | LC_ALL=C sort -t"$TAB" -k1,1n -k2,2 | cut -f2- > "$TMP/window.all"
   WINDOW_N="$(wc -l < "$TMP/window.all" | tr -d ' ')"
   head -n "$CARD_ROWS" "$TMP/window.all" > "$TMP/window"
