@@ -42,8 +42,8 @@ It does not — a gitignore `*` never matches a `/`, so the pattern matches exac
 one directory level. That is deliberate:
 
 ```
-skills/rebuild-to-own/pilots.md             ignored   (a real user's pointers)
-skills/rebuild-to-own/templates/pilots.md   tracked   (the template that ships)
+skills/learn-with-reps/pilots.md            ignored   (a real user's pointers)
+skills/learn-with-reps/templates/track/pilots.md  tracked  (the template that ships)
 ```
 
 Both files exist in a working tree, have the same name, and have opposite

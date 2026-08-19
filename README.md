@@ -2,23 +2,25 @@
 
 *(formerly `gsd-mentor` — see Lineage below)*
 
-A pair of Claude Code **skills** that mentor you through any technical or programming concept by making you *write* — because writing is thinking, and reading isn't. For self-directed learners who want to genuinely **own** a concept, a codebase, a PR, or a language feature — not just skim it.
+A Claude Code **skill** that mentors you through any technical or programming concept by making you *write* — because writing is thinking, and reading isn't. For self-directed learners who want to genuinely **own** a concept, a codebase, a PR, or a language feature — not just skim it.
 
-> The model already knows the material. What it's missing is *you* — your fluent language, your gaps, your phrasings. These skills supply both halves: a portable mentoring discipline, and an optional memory of who you are.
+> The model already knows the material. What it's missing is *you* — your fluent language, your gaps, your phrasings. This skill supplies both halves: a portable mentoring discipline, and an optional memory of who you are.
 
 <img width="1062" height="1232" alt="demo" src="https://github.com/user-attachments/assets/41fca8b3-bff4-4ff0-a65b-0a25a66ede47" />
 
 
 
-## The three skills
+## One skill, three capabilities
 
-| Skill | What it is | Needs a filesystem? |
+It installs as a single skill. `SKILL.md` opens with a routing block and then carries the whole mentoring discipline; the two capabilities that need a disk sit beside it as reference files, and load only when they can actually work.
+
+| capability | what it is | needs a filesystem? |
 |---|---|---|
-| **`learn-with-reps`** | The mentoring discipline. Dense, Socratic, never spoon-feeds. Builds a picture of you on the fly and drills write-to-think reps until you can teach the concept back. | **No** — fully portable. Any Claude Code session, any agent, even pasted into a bare chat. |
-| **`learn-with-reps-gsd`** | An optional **sidecar** that adds a persistent learner-profile. Reads who you are at session start (via ripgrep), distills what you learned at the end. Auto-loads alongside the generic skill when a filesystem is reachable. | **Yes** — reads/writes a `PROFILE.md`. |
-| **`rebuild-to-own`** | Turns a codebase you own on paper but never wrote into an exercism-style rebuild curriculum: one branch per topic, the agent scrapes each module into a scaffold, you rebuild it, and the shipped implementation in the same repo is the answer key. Runs on both skills above. | **Yes** — git-native; it lives on branches and worktrees. |
+| **the discipline** (`SKILL.md`) | Dense, Socratic, never spoon-feeds. Builds a picture of you on the fly and drills write-to-think reps until you can teach the concept back. | **No** — fully portable. Any Claude Code session, any agent, even pasted into a bare chat. |
+| **the learner record** (`ref/record.md`) | A persistent memory of who you are, spanning every project. Read at session start so the mentor already knows your level; written at the end with what landed. | **Yes** — a private git repo at an address stated once per machine. |
+| **the graded rebuild** (`ref/rebuild.md`) | Turns a codebase you own on paper but never wrote into an exercism-style rebuild curriculum: one branch per topic, the agent scrapes each module into a scaffold, you rebuild it, and the shipped implementation in the same repo is the answer key. | **Yes** — git-native; it lives on branches and worktrees. |
 
-The split is deliberate: the discipline is valuable on its own and stays environment-blind, so you can lift it anywhere. All file-I/O and profile specifics live in the sidecar.
+`SKILL.md` stays environment-blind on purpose, so you can lift the discipline anywhere — into a bare chat window with no filesystem at all. Everything that touches a disk lives in the reference files, and a session that can't reach one simply runs without it.
 
 ## The pitch — why "reps"
 
@@ -33,34 +35,33 @@ It does this with **dense, Socratic** turns: rich context (concept + rationale +
 git clone https://github.com/luutuankiet/gsd-mentor.git ~/dev/gsd-mentor
 cd ~/dev/gsd-mentor
 
-# 2. Copy the skills into your Claude Code project (or ~/.claude for global use)
+# 2. Copy the skill into your Claude Code project (or ~/.claude for global use)
 mkdir -p ~/dev/myproject/.claude/skills
-cp -r skills/learn-with-reps     ~/dev/myproject/.claude/skills/
-cp -r skills/learn-with-reps-gsd ~/dev/myproject/.claude/skills/   # optional — only if you want a persistent profile
-cp -r skills/rebuild-to-own      ~/dev/myproject/.claude/skills/   # optional — the rebuild-a-codebase curriculum
+cp -r skills/learn-with-reps ~/dev/myproject/.claude/skills/
 ```
 
-The generic skill works immediately. To use the profile sidecar, one more step:
+That is enough to start — the discipline works immediately, with no record and no setup.
+
+To keep a learner record that survives across sessions and projects, run the installer
+**once per machine**. It clones (or creates) a private repo for the record, seeds it from
+the shipped skeleton, and writes the address into your user-scope instruction file so every
+future session can find it:
 
 ```bash
-# 3. Seed your profile beside the skills you just installed
-cp PROFILE.template.md ~/dev/myproject/PROFILE.md
-$EDITOR ~/dev/myproject/PROFILE.md     # background, fluent anchors, what you're learning
+# 3. Optional — set up the persistent learner record
+skills/learn-with-reps/bin/install.sh <your-private-remote> ~/path/for/the/record
 ```
 
-There is no path to configure. The sidecar looks for `PROFILE.md` at the root of whatever
-project loaded it — the directory containing the `.claude/skills/` it came from — then falls
-back to any location a project or a rebuild track has pinned, and asks you if it finds
-neither. **Put that project on a private remote:** the profile is the most personal file in
-the system, and it grows for years.
+The address is **stated, never inferred**: nothing guesses the location from where the skill
+happens to sit, because a guess that fails quietly produces a second record and halves your
+history. **Keep that repo private** — it is the most personal thing in the system, and it
+grows for years.
 
 **Tip — symlink instead of copy** if you use these across several projects, so edits to the
 skill never drift between copies:
 
 ```bash
-ln -s ~/dev/gsd-mentor/skills/learn-with-reps     ~/dev/myproject/.claude/skills/learn-with-reps
-ln -s ~/dev/gsd-mentor/skills/learn-with-reps-gsd ~/dev/myproject/.claude/skills/learn-with-reps-gsd
-ln -s ~/dev/gsd-mentor/skills/rebuild-to-own      ~/dev/myproject/.claude/skills/rebuild-to-own
+ln -s ~/dev/gsd-mentor/skills/learn-with-reps ~/dev/myproject/.claude/skills/learn-with-reps
 ```
 
 ## Usage
@@ -73,15 +74,15 @@ Just talk in natural language — no slash commands:
 "I'm reading the Next.js routing docs, here's where I'm stuck: <paste>"
 ```
 
-The generic skill starts mentoring. If you installed the sidecar and you're in a filesystem-capable session, it auto-loads, greps your profile so the mentor already knows your level, and persists what you learned when you wrap up. You never read the profile — everything reaches you in plain English, in the conversation.
+The skill starts mentoring. If you set up a record and you're in a filesystem-capable session, it loads that too, so the mentor already knows your level, and it writes back what landed when you wrap up. You never read the record — everything reaches you in plain English, in the conversation.
 
 ## Running a session — end to end
 
-Three ways to use the family. The dividing line is **which memory a session loads**, and each has a different kickoff. You never type a slash command — the skills load on meaning — but you do need to know which scenario you're in.
+Three ways to use it. The dividing line is **which memory a session loads**, and each has a different kickoff. You never type a slash command — the skills load on meaning — but you do need to know which scenario you're in.
 
 ### Scenario A — learn a concept, no repo involved
 
-**Loads:** `learn-with-reps` (+ `learn-with-reps-gsd` if you keep a profile). Nothing is written to any repo; the only durable output is a profile delta.
+**Loads:** the discipline, plus the record if you keep one. Nothing is written to any repo you ship in; the only durable output is a record delta.
 
 | turn | you | the agent |
 |---|---|---|
@@ -95,7 +96,7 @@ The most common real case. Often it runs as **two sessions: ship first, then reb
 
 **Session 1 — ship (no learning skills loaded).** Drive the work however you normally do; let the agent build the feature properly and review it. The point is to reach a *correct, idiomatic, reviewed* implementation. That finished code becomes the answer key — so it's worth getting right before you try to reproduce it.
 
-**Session 2 — rebuild.** Fresh session (or compact first). **Loads:** `rebuild-to-own`, which pulls in `learn-with-reps` + `learn-with-reps-gsd` automatically.
+**Session 2 — rebuild.** Fresh session (or compact first). **Loads:** the discipline, the record, and the rebuild reference — the router pulls the last two in as soon as it sees a git repo and a rebuild ask.
 
 | turn | you | the agent |
 |---|---|---|
@@ -124,20 +125,20 @@ Two shapes, your choice of ask:
 
 **You write the code.** The agent creates branches, scrapes scaffolds, teaches, and grades — it never implements the exercise. A graded diff of code you didn't write measures nothing.
 
-## The profile (sidecar only)
+## The learner record (only when a filesystem is reachable)
 
-The sidecar keeps a single, forever-growing `PROFILE.md` in a **3-tier schema** designed to stay ripgrep-fast no matter how big it gets:
+The record is a forever-growing **3-tier schema** designed to stay ripgrep-fast no matter how big it gets:
 
 - **Learner Core** — who you are (background, fluent anchors, how you learn, preferences). Bounded; rewritten in place.
 - **Topic Ledger** — one line per concept, status-tagged so `rg '^### \['` returns your whole learning map in one shot:<br/>`### [owned] closures — <one-line model> · anchor:python-X · 2026-06-01`
 - **Session Log** — dated entries, rolled up into the archive once they pile up, so the outline never bloats.
 
-The full structure and the reasoning behind it ship with the sidecar at `skills/learn-with-reps-gsd/ref/profile-schema.md`. Read that before reshaping a profile. `PROFILE.template.md` is the seed.
+The full structure and the reasoning behind it ship at `skills/learn-with-reps/ref/profile-schema.md`. Read that before reshaping a record.
 
 ## Customization
 
-- **Profile location** — resolved, not configured: `PROFILE.md` at the root of the project whose `.claude/skills/` loaded the sidecar. To keep it somewhere else, pin the path in that project's instructions or in a rebuild track's `learn/CHARTER.md`; the pin wins over the default.
-- **Tone / density** — both `SKILL.md` files are plain markdown. Tune the density, anchors, and register to taste.
+- **Record location** — stated once per machine by `bin/install.sh`, which writes the address into your user-scope instruction file. A rebuild track's `learn/CHARTER.md` may pin a different one, and that pin wins.
+- **Tone / density** — `SKILL.md` and the files under `ref/` are plain markdown. Tune the density, anchors, and register to taste.
 - **Generic-only** — don't want a persistent profile? Skip the sidecar. The generic skill builds a fresh picture of you each session and persists nothing.
 
 ## Lineage

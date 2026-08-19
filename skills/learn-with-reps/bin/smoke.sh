@@ -310,5 +310,26 @@ else
   bad "the install section did not finish"
 fi
 
+# --- the portable boundary -------------------------------------------------
+# SKILL.md is the always-loaded half. It must stay runnable where there is no
+# filesystem at all, so it may name its own bundled relative references (inert
+# when absent) but never an absolute path, a home directory, or the record's
+# address. Before the three skills were merged this was a file boundary anyone
+# could prove; now it is a section boundary, and these are what prove it.
+SKILL_DIR="$(dirname -- "$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)")"
+SKILL_MD="$SKILL_DIR/SKILL.md"
+
+check "the always-loaded half names no absolute path" \
+  "$(grep -cE '(^|[^a-zA-Z0-9._/-])(/[a-zA-Z]|~/)' "$SKILL_MD")" "0"
+check "the always-loaded half does not carry the record address" \
+  "$(grep -c 'learn-with-feedback-loop:record' "$SKILL_MD")" "0"
+
+# A pointer the router names must resolve, or a session silently teaches without it.
+MISSING=0
+for r in $(grep -oE 'ref/[a-z-]+\.md' "$SKILL_MD" | sort -u); do
+  [ -f "$SKILL_DIR/$r" ] || MISSING=$((MISSING + 1))
+done
+check "every reference the router names exists" "$MISSING" "0"
+
 printf '\n%s passed, %s failed\n' "$PASS" "$FAIL"
 [ "$FAIL" -eq 0 ]

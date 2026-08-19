@@ -1,4 +1,4 @@
-# rebuild-to-own - design notes
+# Rebuild to own - design notes
 
 Why the skill is shaped the way it is, what the artifacts are, and the three end-to-end flows. `SKILL.md` is the operating manual and is self-sufficient for running a session; **this file is for changing the rig, not running it.**
 
@@ -45,7 +45,7 @@ graph TD
     S[SKILL.md<br/>operating manual]
     D[DESIGN.md<br/>this file]
     LWR[learn-with-reps<br/>mentoring discipline]
-    GSD[learn-with-reps-gsd<br/>profile sidecar]
+    GSD[ref/record.md<br/>the learner record]
     T[template/<br/>new-record seed]
   end
   subgraph learner["Learner's own private record - spans all tracks"]
@@ -175,9 +175,9 @@ flowchart TD
 ```mermaid
 graph LR
   LWR[learn-with-reps<br/>discipline - portable, fs-blind]
-  GSD[learn-with-reps-gsd<br/>profile I/O sidecar]
+  GSD[ref/record.md<br/>record I/O]
   GRILL[comprehension mentor<br/>can you EXPLAIN it]
-  RTO[rebuild-to-own<br/>can you PRODUCE it]
+  RTO[ref/rebuild.md<br/>can you PRODUCE it]
   LWR --> GSD
   LWR --> GRILL
   LWR --> RTO

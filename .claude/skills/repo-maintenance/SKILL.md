@@ -40,6 +40,7 @@ Why the repo is the way it is. A merged decision is immutable -- supersede
 it with a new one rather than editing it.
 
 - [Move CLAUDE.md's contents into AGENTS.md rather than appending a bridge line](../../../docs/adr/0001-move-claude-md-into-agents-md.md)
+- [Merge the three skills into one, with a router and on-demand references](../../../docs/adr/0002-merge-the-three-skills-into-one.md)
 
 <!-- END GENERATED INDEX -->
 
