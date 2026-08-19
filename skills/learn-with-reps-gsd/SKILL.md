@@ -43,7 +43,17 @@ Then **hydrate one or two topic bodies by name**, on demand, and nothing else. T
 
 **`ACTIVE` is where a session resumes by default**, and a hydrated page's open reps are the resume point. Rep debt answered days later in a fresh session is the **preferred** outcome, not a make-up.
 
-**Sibling modes** — same script, same scan, no second store: `boot` (the digest above), `query <predicate>` (a filter over the same table, e.g. `owned & last>60d`), `check` (non-zero when the generated index is stale, which the boot repairs by regenerating).
+**Sibling modes** — same script, same scan, no second store:
+
+| invocation | what it does |
+|---|---|
+| `boot.sh <root>` | the digest above; regenerates the index if it has gone stale |
+| `boot.sh <root> --query <predicate>` | a filter over the same table — terms ANDed, e.g. `'owned & last>60d'`, or `all` for the full ledger |
+| `boot.sh <root> --check` | exits non-zero when the generated index is stale, and writes nothing |
+
+Predicate terms: `all` · `gap` / `learning` / `owned` · `rusty` · `unverified` · `active` · `track=<slug>` · `anchor=<slug>` · `earned_by=<value>` · `last>Nd` / `last<Nd`.
+
+**Exit codes carry the failure state.** `3` means the root does not exist — that is state B in the table below, and the answer is to stop and offer the re-clone, never to seed a replacement. `2` is a usage error. The script never creates a record.
 
 ## Harvest — durable artifacts only, and say what you had
 
