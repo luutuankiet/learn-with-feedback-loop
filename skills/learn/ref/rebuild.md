@@ -17,7 +17,7 @@ chat, which makes the graded evidence a diff. Everything else about the teaching
 turn is the discipline's, unmodified.
 
 **How it was designed + the end-to-end flows:** `rebuild-design.md`, sibling of this
-file - artifact graph, the three modes as flow diagrams, decisions with their
+file - artifact graph, the three phases as flow diagrams, decisions with their
 rejected alternatives, the invariants. Read it when changing how the rig works, or
 when a situation isn't covered here. Do NOT read it to run a normal session; this
 file is self-sufficient for that.
@@ -142,7 +142,7 @@ The learner's work arrives as commits. **Diffs are the evidence; the working tre
 
 ## Docs discipline - menu first, grep always
 
-Every `learn/` doc opens with `## Menu`: one row per section - what it holds, when to read it. Boot sequence for ANY mode:
+Every `learn/` doc opens with `## Menu`: one row per section - what it holds, when to read it. Boot sequence for ANY phase:
 
 ```
 rg '^## ' <syllabus-worktree>/learn/*.md       # every doc's section menu
@@ -187,9 +187,16 @@ A cold agent must be able to compile a full teaching session from the brief alon
 | **Prereqs/unlocks** | DAG edges |
 | **State** | status + rep debt |
 
-## Modes
+## Phases
 
-Three modes, and the syllabus probe runs before all of them. TAILOR writes docs and never teaches; TEACH moves code and teaches one thing; GRADE reads a diff.
+**There are two modes, and neither of them is in this file.** The learner ships, and
+the learner takes a topic over. That is the whole cycle: shipping produces the
+candidates, taking over is what turns one of them into something they own. Everything
+below sits *inside* taking over - so TAILOR, TEACH and GRADE are **phases of one mode**,
+never a menu the learner picks from. They were called modes for a while and it cost the
+word; the word is needed for the cycle.
+
+Three phases, and the syllabus probe runs before all of them. TAILOR writes docs and never teaches; TEACH moves code and teaches one thing; GRADE reads a diff.
 
 ### TAILOR - survey the code, produce the menu (never teaches)
 
@@ -211,7 +218,7 @@ A cold repo plus a bare "teach me X" is a TAILOR ask, not a TEACH one - route it
 
 ### TEACH - open ONE topic, scaffold it, teach it
 
-**Topic selection, in precedence order - first hit wins, no mode-switch required:**
+**Topic selection, in precedence order - first hit wins, no phase-switch required:**
 1. An explicit pointer from the learner - a topic name, a path, a commit, a range.
 2. The bookmark - the `[building]` row.
 3. The first `[queued]` row whose prereqs are all `[graded]`/`[owned]`.
