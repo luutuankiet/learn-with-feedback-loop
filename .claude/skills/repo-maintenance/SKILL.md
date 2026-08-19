@@ -58,7 +58,7 @@ minutes if someone had told you. Three tests, all must pass:
    | rung | use when | this repo |
    |---|---|---|
    | make it a **type error** | the mistake is expressible in the type system | none — there is no type system here |
-   | make it a **test** | the mistake is an assertable behaviour | there is no test runner |
+   | make it a **test** | the mistake is an assertable behaviour | `skills/learn-with-reps-gsd/bin/smoke.sh` — bash assertions, no framework; extend it rather than adding one |
    | **comment at the site** | there is exactly one line where someone could get it wrong | yes — an inline parenthetical in the skill body, as in the sidecar's "Load trigger (lives HERE, never in learn-with-reps)" |
    | **a doc** | the mistake can be made from any of several files, or from a file that does not exist yet | the catalogue above |
 

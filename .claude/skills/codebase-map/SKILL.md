@@ -47,9 +47,11 @@ is 216. "It's in the skill file" is not an answer.
 ## What this map does not tell you
 
 It tells you **where**, not **why it is dangerous**. Some areas below have failure
-modes that produce no error at all — this repository has no test runner, so
-nothing here fails loudly. Those are catalogued separately, by symptom, in the
-`repo-maintenance` skill and in [docs/README.md](../../../docs/README.md).
+modes that produce no error at all. The one test runner here,
+`skills/learn-with-reps-gsd/bin/smoke.sh`, covers the boot script and nothing
+else, so most of this tree still fails silently. Those failures are catalogued
+separately, by symptom, in the `repo-maintenance` skill and in
+[docs/README.md](../../../docs/README.md).
 
 The single most fragile path is `skills/learn-with-reps/SKILL.md`. It is
 **filesystem-blind by design**, and adding any path, filename or storage reference

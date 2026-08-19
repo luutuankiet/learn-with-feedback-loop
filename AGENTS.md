@@ -36,9 +36,14 @@ PROFILE.template.md           seed template for a new learner record
 scripts/gen-docs-index.sh     regenerates every index here
 ```
 
-No build, no test runner, no linter — this is markdown and one bash script. The
-only check is `scripts/gen-docs-index.sh --check`, non-zero when an index is
-stale. Do not add a toolchain to change that.
+No build step and no linter — this is markdown and bash. Two checks exist:
+
+```sh
+skills/learn-with-reps-gsd/bin/smoke.sh   # 24 assertions over the boot script
+scripts/gen-docs-index.sh --check         # non-zero when a docs index is stale
+```
+
+Do not add a toolchain beyond those.
 
 <!-- The appendable seam. Everything ABOVE this comment belongs to the project and
      is never touched on a re-run; everything below is the standard block. Append
