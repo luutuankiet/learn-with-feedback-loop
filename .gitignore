@@ -29,3 +29,7 @@ PROFILE-*.md
 
 # OS noise
 .DS_Store
+
+# Scratch and agent worktrees — local working state, never published
+tmp/
+.claude/worktrees/
