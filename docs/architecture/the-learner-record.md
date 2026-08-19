@@ -56,8 +56,16 @@ verbatim plus a fully derived digest, then one or two topic bodies hydrated on
 demand. **Never a full read**; the record grows forever and the boot payload must
 not.
 
-> The boot script itself does not exist yet. The sidecar specifies it; nothing in
-> this repository implements it. A session booting today will not find it.
+It ships with the plugin rather than with the record —
+`skills/learn-with-reps-gsd/bin/boot.sh` — so everything executable stays inside
+the skill, the record stays pure data, and the schema is defined in one place. The
+three modes are flags on the same scan:
+
+```sh
+boot.sh <record-root>                 the boot digest
+boot.sh <record-root> --check         exit 1 if the index is stale
+boot.sh <record-root> --query <pred>  filter the same table
+```
 
 **The general rule:** state that grows without bound cannot be loaded eagerly, so
 the entry point has to be a query rather than a file. Once the entry point is a

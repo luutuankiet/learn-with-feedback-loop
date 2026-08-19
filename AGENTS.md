@@ -18,12 +18,15 @@ gaps, phrasings, preferences — so a session resumes where the last one stopped
   the split exists for.
 - **The learner's record is not in this repository** and never will be. It is a
   tree in the learner's own private repo, reached by a pointer.
+- **The learner never reads the record, or any note about them.** Everything
+  reaches them in plain English: no file paths, no field names, no status tokens.
 
 ## Layout
 
 ```
 skills/learn-with-reps/       the generic, filesystem-blind mentoring discipline
 skills/learn-with-reps-gsd/   sidecar — reads and writes the learner record
+  bin/boot.sh                 the record's one-call session opening
   ref/profile-schema.md       the record's locked structure, and why
   profile-housekeeping.md     the maintenance runbook, loaded on demand
 skills/rebuild-to-own/        graded rebuild over a repo the learner never wrote
