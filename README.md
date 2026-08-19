@@ -34,6 +34,11 @@ own words. Nodding along at a good explanation earns nothing, and the record say
 so in plain language — a topic you skipped for time reads as *asserted*, with your
 own model line left empty, and no future session can mistake that for knowledge.
 
+**And you don't have to remember to do it.** Opt a machine in and your ordinary
+sessions start already knowing who you are; when the work you are doing walks into
+something on your map, the agent says so once, at the end of a turn, and offers.
+Ignore it and it costs you a line. [How that works](#the-nudge--how-mode-two-actually-starts).
+
 The direction of travel is the point. The share of the code the agent writes should
 trend down, the share you write should trend up, and the scaffold should fade
 rather than get more comfortable.
@@ -215,9 +220,10 @@ obeyed when you say it, never inferred from your mood.
 ```mermaid
 flowchart TB
     subgraph SHIP["① Shipping session — no learning skill loaded"]
+        S0["session-start card arrives<br/><i>only on a machine that opted in</i>"]
         S1["you ship with the agent<br/><i>normal work, normal sessions</i>"]
         S2["durable artifacts<br/>commits · diffs · PR bodies · the repo's own docs"]
-        S1 --> S2
+        S0 --> S1 --> S2
     end
 
     subgraph LEARNS["② Learning session — days later, you open it"]
@@ -240,6 +246,8 @@ flowchart TB
     REC[("the learner record<br/>your own private git repo<br/>one page per topic")]
 
     S2 -. "read, never written" .-> L3
+    REC -. "a bounded card, sampled —<br/>never the file itself" .-> S0
+    S1 -. "one nudge, only when the work<br/>touched a row on the card —<br/>an offer, never a block" .-> L1
     L6 == "writes topic pages only —<br/>never the hand-written page" ==> REC
     M3 == "the only writer<br/>the hand-written page ever has" ==> REC
 
@@ -270,6 +278,73 @@ with less information.
 
 ---
 
+## The nudge — how mode two actually starts
+
+Two modes in order has one obvious failure: **you have to remember to open the
+second one.** Nothing about shipping reminds you, and a system that depends on
+your willpower at the end of a long day is a system that quietly stops running.
+
+So it doesn't depend on it. Once a machine is set up, **every ordinary session
+starts already knowing who you are** — a session-start hook puts a small card
+into the agent's context before your first message. Not into your face: you never
+see it, and it is not a report about you. It is the smallest thing that lets an
+agent working on something else recognise that the something else is on your map.
+
+**What the card is.** A recent window — the newest rows of what you have actually
+touched — plus the hand-written page that says who you are. It is a **sample, not
+the record**, and it says so in its own footer, because an agent that mistakes a
+window for the whole thing will confidently tell you a topic is new when it has
+been there for a year.
+
+```text
+RECENT — touched in the last 30d (newest 12 of 20)
+  retry-semantics         queues  learning · never-said-back  0/2   4d  the queue consumer rewrite
+  idempotency-keys        queues  learning                    1/2   4d  the queue consumer rewrite
+  at-least-once-delivery  queues  owned                       3/3  11d  the queue consumer rewrite
+```
+
+**That is the scoreboard, and it is the honest kind.** Every row carries what
+state the topic is in, how many of the reps posed to you were actually answered,
+how long since it was touched, and whether you have ever said it back in your own
+words. `never-said-back` is the one that stings and the one that matters: reading
+about something moves nothing, agreeing with a good explanation moves nothing, and
+a topic reaches **`owned` only when you explained it in your own words and those
+words are what got written down**. It is a progress bar you cannot advance by
+consuming — the only move that changes a row is saying the thing out loud.
+
+**Then the agent may nudge, once.** Only when the session's work genuinely touched
+something on the card, and it has to name the trigger. Three symbols, one line
+each:
+
+```text
+▲  a gap the work just walked into
+◆  reps left open on something already in flight
+○  never said back in their own words — not safe to build on
+```
+
+In practice it costs you one line, at the end of a turn that was already finishing:
+
+```text
+◆ retry semantics — came up in the queue consumer you just changed
+  Two reps still open on it. Want one, or carry on?
+```
+
+**What it will not do** is the whole point. It never asks a question that halts
+the turn. It never nudges because there is material sitting there — if your work
+went nowhere near any of it, you hear nothing, and silence on a busy day is the
+feature. It never speaks in the record's vocabulary: no slugs, no field names, no
+status tokens, not even quoted back as a phrase. And accepting is what loads the
+mentoring skill — decline and nothing further happens, no skill, no session, no
+second ask.
+
+**Opting in is structural, not a setting.** The installer registers the hook in
+the same act that records your record's address, so a fresh plugin install has
+nothing registered — nothing to fire and nothing to fail. Deleting that one
+marked block from your instruction file turns off the card and the address
+together, in a single edit. A machine that never opted in runs none of this.
+
+---
+
 ## Install
 
 One plugin. In Claude Code:
@@ -294,7 +369,9 @@ The plugin lives in a cache whose path differs per machine, so the simplest way 
 run that is to ask your session — *"set up my learner record, the remote is `…`"* —
 and let it use the skill directory it just loaded. The script clones the record, or
 seeds an empty remote from the shipped skeleton, then writes the address into your
-user-scope instruction file so every future session can find it. `install.sh --where`
+user-scope instruction file so every future session can find it — and in the same
+act registers the [session-start hook](#the-nudge--how-mode-two-actually-starts)
+that delivers the card. `install.sh --where`
 prints the recorded path without changing anything, which is how you check whether
 a machine is already set up.
 
