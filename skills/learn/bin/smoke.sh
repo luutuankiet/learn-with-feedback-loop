@@ -73,7 +73,9 @@ housekept: $(ago 94)
 
 **Background.** Ships pipelines; weak on distributed failure modes.
 
+<!-- BEGIN CARD -->
 **The mission.** Stop being the person who can fix it but not explain it.
+<!-- END CARD -->
 EOF
 
 # active: learning with open reps, inline list, block seen_in, quoted model
@@ -241,6 +243,70 @@ check "a predicate ANDs its terms" \
   "watermarking"
 check "an unknown term is refused" \
   "$($BOOT "$R" --query 'wat' >/dev/null 2>&1; echo $?)" "2"
+
+echo "card"
+#
+# The card is the shipping session's payload: the marked spans of Level 0 plus
+# a recent window, and nothing else. Two properties are worth guarding, because
+# both fail quietly. A boundary found by heading name empties the card the day
+# somebody renames a heading, with everything still working and nothing to
+# announce it -- so the boundary is a marker, and its absence is announced. And
+# a payload with no ceiling is a payload that is fine until the record is big,
+# which is exactly when nobody is looking.
+CARD="$($BOOT "$R" --card 2>&1)"; CRC=$?
+check "the card exits clean" "$CRC" "0"
+check "the card carries the marked span" \
+  "$(printf '%s\n' "$CARD" | grep -c 'Stop being the person')" "1"
+check "the card carries ONLY the marked span" \
+  "$(printf '%s\n' "$CARD" | grep -c 'Ships pipelines')" "0"
+check "the card says it is a window, and where to get certainty" \
+  "$(printf '%s\n' "$CARD" | grep -c -- '--query all')" "1"
+check "a card row carries its track and its recognition handle" \
+  "$(printf '%s\n' "$CARD" | grep -c 'idempotent-merges .*data-pipelines .*warehouse cost spike')" "1"
+check "the window excludes what is older than the window" \
+  "$(printf '%s\n' "$CARD" | grep -c 'watermarking')" "0"
+
+# The card must never write. It fires at the start of sessions that have
+# nothing to do with the record, in repositories that have nothing to do with
+# it either; regenerating an index from there is a surprise write.
+QUIET="$WORK/quiet"
+mkdir -p "$QUIET/topics"
+cp "$R/AGENTS.md" "$QUIET/AGENTS.md"
+cp "$R/topics/lookback-windows.md" "$QUIET/topics/"
+$BOOT "$QUIET" --card >/dev/null 2>&1
+check "the card writes nothing -- no index is generated" \
+  "$([ -e "$QUIET/INDEX.md" ] && echo wrote || echo silent)" "silent"
+
+# An unmarked page is the silent-failure case the markers exist to prevent.
+BARE="$WORK/bare"
+mkdir -p "$BARE/topics"
+printf '# Who this learner is\n\n**The mission.** Unmarked, so unreadable.\n' > "$BARE/AGENTS.md"
+BARECARD="$($BOOT "$BARE" --card 2>&1)"
+check "an unmarked page is announced, not silently empty" \
+  "$(printf '%s\n' "$BARECARD" | grep -c 'no card markers')" "1"
+check "an unmarked page does not leak the whole page instead" \
+  "$(printf '%s\n' "$BARECARD" | grep -c 'Unmarked, so unreadable')" "0"
+
+# The ceiling, measured where it matters: a record far larger than the one
+# above, every page touched inside the window, so nothing but the cap is
+# holding the payload down. Bytes stand in for tokens at the usual ~4:1, so
+# 6000 bytes is the 1500-token budget with the slack a fixture deserves.
+BIG="$WORK/big"
+mkdir -p "$BIG/topics"
+cp "$R/AGENTS.md" "$BIG/AGENTS.md"
+i=0
+while [ "$i" -lt 200 ]; do
+  printf -- '---\nstatus: learning\ntrack: data-pipelines\nearned_by: asserted\nreps: 0/3\nopen_reps: [a-rep]\ntouches: 1\nlast: %s\nseen_in:\n  - the warehouse cost spike\n---\n\n# big-%03d\n' \
+    "$(ago 2)" "$i" > "$BIG/topics/big-$(printf '%03d' "$i").md"
+  i=$((i + 1))
+done
+BIGCARD="$($BOOT "$BIG" --card 2>&1)"
+check "the window is capped however much was touched" \
+  "$(printf '%s\n' "$BIGCARD" | grep -c '^  big-')" "12"
+check "the cap says what it is hiding" \
+  "$(printf '%s\n' "$BIGCARD" | grep -c 'newest 12 of 200')" "1"
+check "the card stays under its byte ceiling on a big record" \
+  "$([ "$(printf '%s\n' "$BIGCARD" | wc -c)" -le 6000 ] && echo under || echo over)" "under"
 
 echo "failure states"
 check "a missing root exits 3, not 0 and not 1" \

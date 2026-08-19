@@ -61,8 +61,38 @@ Then **hydrate one or two topic bodies by name**, on demand, and nothing else. T
 | `boot.sh <root>` | the digest above; regenerates the index if it has gone stale |
 | `boot.sh <root> --query <predicate>` | a filter over the same table — terms ANDed, e.g. `'owned & last>60d'`, or `all` for the full ledger |
 | `boot.sh <root> --check` | exits non-zero when the generated index is stale, and writes nothing |
+| `boot.sh <root> --card` | the session-start name card — see below. Read-only, and never regenerates the index |
 
 Predicate terms: `all` · `gap` / `learning` / `owned` · `rusty` · `unverified` · `active` · `track=<slug>` · `anchor=<slug>` · `earned_by=<value>` · `last>Nd` / `last<Nd`.
+
+### The name card — who, for a session that never asked
+
+A mentoring session can afford the boot above. A **shipping** session cannot: it
+never opened this skill, and everything here costs it tokens it came for
+something else with. The card is the small payload that still tells an agent who
+it is working with — the marked spans of Level 0, plus the topics touched
+recently, and nothing else.
+
+Two terms, chosen by measurement rather than taste. The hand-written page is
+constant in size at every record size, so trimming topic rows while it is uncut
+saves nothing; an anchors-plus-mission subset of it is a fraction of the whole.
+And nothing else in the digest is bounded — the active list grows monotonically
+because an abandoned learning thread never retires, and a complete owned list is
+linear in record size with no cap available, since completeness is all it is
+for. A **recent-activity window** is the one term bounded in practice: bounded
+by how much the learner touches, not by how much they have learned.
+
+**The card is a window, and it says so.** Never conclude a topic is new because
+it is absent from a card — it may simply be older than the window, or below the
+row cap. When certainty matters, the query mode is one call away. That is what
+makes the small payload safe rather than merely small.
+
+**The page subset is delimited by markers in the page, never found by heading
+name.** Heading-matching fails silently: rename a heading and the card quietly
+empties, everything keeps working, and the guidance just gets worse with nothing
+to announce it. A missing marker is announced instead. Housekeeping is the only
+writer of Level 0, so it is also the only maintainer of those markers —
+`profile-housekeeping.md` carries the step.
 
 **Setup is a sibling script, run once per machine.** `<skill dir>/bin/install.sh <private-git-url> [path]` clones the record, seeds it from `template/` if the remote is empty, writes the marker, and boots once to prove it reads. `install.sh --where` prints the recorded path without changing anything, which is how you check whether this machine is set up. **The URL is always an argument** — this script ships publicly, so a private remote inside it would ship with it.
 
