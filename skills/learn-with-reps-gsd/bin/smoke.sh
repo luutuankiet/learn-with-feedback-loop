@@ -253,5 +253,62 @@ mkdir -p "$WORK/empty"
 check "an empty record boots rather than failing" \
   "$($BOOT "$WORK/empty" >/dev/null 2>&1; echo $?)" "0"
 
+# ---------------------------------------------------------------- install ---
+#
+# install.sh has a contract too, and its two load-bearing properties are exactly
+# the kind that rot without a guard: re-running must not duplicate the marker,
+# and a second host must not re-seed a record the remote already has. The second
+# one is the failure this whole design exists to prevent -- a second record.
+#
+# Runs in a subshell with HOME redirected, so nothing here can touch the real
+# machine's instruction file or clone anything into a real home directory.
+(
+  INSTALL="$HERE/install.sh"
+  [ -x "$INSTALL" ] || { echo "  FAIL  install.sh is not executable" >&2; exit 1; }
+
+  echo "install"
+  export HOME="$WORK/fakehome"
+  export LEARN_AGENTS_FILE="$HOME/.claude/CLAUDE.md"
+  export GIT_AUTHOR_NAME=smoke GIT_AUTHOR_EMAIL=smoke@example.invalid
+  export GIT_COMMITTER_NAME=smoke GIT_COMMITTER_EMAIL=smoke@example.invalid
+  mkdir -p "$HOME/.claude"
+  printf '# notes\n\nprose that was here first.\n' > "$LEARN_AGENTS_FILE"
+  git init -q --bare "$WORK/remote.git"
+
+  check "no URL is a usage error, not a guess" \
+    "$($INSTALL >/dev/null 2>&1; echo $?)" "2"
+  check "no URL writes no marker" \
+    "$(grep -c 'learn-with-feedback-loop:record' "$LEARN_AGENTS_FILE")" "0"
+
+  $INSTALL "$WORK/remote.git" "$HOME/rec" >/dev/null 2>&1
+  check "a first install seeds and records the address" \
+    "$($INSTALL --where)" "$HOME/rec"
+  check "the seed is the tree, not a profile file" \
+    "$([ -f "$HOME/rec/AGENTS.md" ] && [ -d "$HOME/rec/topics" ] && echo tree)" "tree"
+
+  $INSTALL "$WORK/remote.git" "$HOME/rec" >/dev/null 2>&1
+  check "re-running does not duplicate the marker" \
+    "$(grep -c 'learn-with-feedback-loop:record' "$LEARN_AGENTS_FILE")" "2"
+  check "prose around the marker survives" \
+    "$(grep -c 'prose that was here first' "$LEARN_AGENTS_FILE")" "1"
+
+  # The one that matters: a second machine cloning the SAME remote must adopt
+  # the existing record, never seed a rival one.
+  export HOME="$WORK/fakehome2"
+  export LEARN_AGENTS_FILE="$HOME/.claude/CLAUDE.md"
+  mkdir -p "$HOME/.claude"
+  $INSTALL "$WORK/remote.git" "$HOME/rec" >/dev/null 2>&1
+  check "a second host adopts rather than re-seeds" \
+    "$(git -C "$HOME/rec" rev-list --count HEAD)" "1"
+
+  printf '%s %s\n' "$PASS" "$FAIL" > "$WORK/install.tally"
+)
+if [ -f "$WORK/install.tally" ]; then
+  read -r P2 F2 < "$WORK/install.tally"
+  PASS="$P2"; FAIL="$F2"
+else
+  bad "the install section did not finish"
+fi
+
 printf '\n%s passed, %s failed\n' "$PASS" "$FAIL"
 [ "$FAIL" -eq 0 ]

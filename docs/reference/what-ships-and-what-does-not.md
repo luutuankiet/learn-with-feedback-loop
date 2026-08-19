@@ -21,8 +21,8 @@ have a template counterpart that does.
 
 | path | why |
 |---|---|
-| `PROFILE.md`, `PROFILE-*.md` | the learner's actual record — the most personal file in the system. `PROFILE.template.md` is explicitly re-included |
-| `skills/*/pilots.md` | per-user pointers to active rebuild tracks: host names and paths |
+| `PROFILE.md`, `PROFILE-*.md` | the learner's actual record. It now lives outside this repo entirely, at the address the install script states; this rule is the backstop for a stray copy |
+| `skills/*/pilots.md` | per-user pointers to active rebuild tracks: host names and paths. These belong in the learner's record now, so this rule guards an old habit rather than a current one |
 | `gsd-lite/` | project meta-state |
 | `raw/letters/`, `raw/medium/` | personal long-form writing and clipped reading, `.gitkeep` aside |
 | `_archive/` | surfaces retired across earlier versions |

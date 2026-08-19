@@ -8,7 +8,8 @@ verified: 2026-08-19
 
 Every mentoring session opens by reading a record of who the learner is. **That
 record is not in this repository, and putting it here would be a defect.** What
-ships here is `PROFILE.template.md` — a seed, 56 lines, never an instance.
+ships here is `skills/learn-with-reps-gsd/template/` — the empty skeleton
+`bin/install.sh` seeds a brand-new record from, never an instance.
 
 ## Why it lives elsewhere
 
@@ -21,6 +22,30 @@ this public one never sees.
 The sidecar resolves it to a **root directory, never a filename** —
 `skills/learn-with-reps-gsd/SKILL.md` states this explicitly, because what lives
 under that root is the record's own business and no session should assume a shape.
+
+## The address is stated, never inferred
+
+The skill arrives through a plugin cache, so its own location differs on every
+machine and says nothing about where the record went. Resolution therefore reads
+a marked block that `bin/install.sh` writes once per machine into the user-scope
+instruction file:
+
+```
+<!-- learn-with-feedback-loop:record -->
+Learner record: /absolute/path/to/the/record
+<!-- /learn-with-feedback-loop:record -->
+```
+
+The earlier rule was proximity — the record beside the skills directory that
+loaded the sidecar — and it was wrong in a way worth recording. A convention
+breaks silently the first time a host cannot honour it, and what it breaks into
+is a **second record**, which halves a learning history without anybody noticing.
+A stated address cannot fail that way: it is either there, or it is missing and
+says so. The conventional path demotes to *the default the installer picks*.
+
+The block holds a plain path and **not an import**. An import would preload the
+record into every unrelated session on the machine; the pointer costs about ten
+tokens and buys the same thing at boot.
 
 ## It is a tree, not a file
 

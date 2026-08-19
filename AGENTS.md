@@ -27,12 +27,13 @@ gaps, phrasings, preferences — so a session resumes where the last one stopped
 skills/learn-with-reps/       the generic, filesystem-blind mentoring discipline
 skills/learn-with-reps-gsd/   sidecar — reads and writes the learner record
   bin/boot.sh                 the record's one-call session opening
+  bin/install.sh              one-per-machine setup: clone, seed, state the address
+  template/                   the skeleton a brand-new record is seeded from
   ref/profile-schema.md       the record's locked structure, and why
   profile-housekeeping.md     the maintenance runbook, loaded on demand
 skills/rebuild-to-own/        graded rebuild over a repo the learner never wrote
   DESIGN.md                   its rationale and decision log
   templates/                  the syllabus docs a track is stamped from
-PROFILE.template.md           seed template for a new learner record
 scripts/gen-docs-index.sh     regenerates every index here
 ```
 
