@@ -1,6 +1,6 @@
 # The learner record
 
-Reference for `learn-with-reps`, loaded per its routing block: **only when this
+Reference for `learn`, loaded per its routing block: **only when this
 session can reach a filesystem and the user-scope instruction file carries a
 record address.** Everything that touches a disk on the learner's behalf is
 specified here and nowhere else.
@@ -50,7 +50,7 @@ What comes back, in one output:
 
 Then **hydrate one or two topic bodies by name**, on demand, and nothing else. The total-topic line is what keeps the boot bounded a year in: the ledger grows forever, the payload does not.
 
-**`RUSTY` and `UNVERIFIED` are instructions, not decoration.** Both list topics you must not build on until you have probed them — see *Probe before you build* in `learn-with-reps`. A topic reading unverified has never been said back in the learner's own words, however recent its date looks.
+**`RUSTY` and `UNVERIFIED` are instructions, not decoration.** Both list topics you must not build on until you have probed them — see *Probe before you build* in `SKILL.md`. A topic reading unverified has never been said back in the learner's own words, however recent its date looks.
 
 **`ACTIVE` is where a session resumes by default**, and a hydrated page's open reps are the resume point. Rep debt answered days later in a fresh session is the **preferred** outcome, not a make-up.
 
@@ -83,7 +83,7 @@ That one line is the whole mechanism. It makes the dependency visible at the mom
 
 **No nudging.** Never tell the learner to go maintain their repository's documentation. That is a different hat in a different session, and a learning session that starts issuing homework about shipping practice has stopped being a learning session.
 
-Rank whatever the harvest surfaces by **adjacency to what the learner genuinely holds** — the zone-of-proximal-development ordering in `learn-with-reps`, walked along the record's anchor edges.
+Rank whatever the harvest surfaces by **adjacency to what the learner genuinely holds** — the zone-of-proximal-development ordering in `SKILL.md`, walked along the record's anchor edges.
 
 ## Write discipline — record engagement, never exposure
 

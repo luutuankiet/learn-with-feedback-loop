@@ -1,7 +1,7 @@
 # Personal data — never publish
 gsd-lite/
 
-# gsd-lite scaffolder leftovers (this repo ships gsd-mentor only — install gsd-lite separately if you want it)
+# gsd-lite scaffolder leftovers (this repo ships the learn skill only — install gsd-lite separately if you want it)
 .claude/agents/gsd-lite.md
 .claude/commands/gsd/
 

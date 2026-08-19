@@ -1,6 +1,6 @@
 # Rebuild to own — a graded, branch-per-topic track
 
-Reference for `learn-with-reps`, loaded per its routing block: **only when the
+Reference for `learn`, loaded per its routing block: **only when the
 learner wants to rebuild a codebase they own on paper but never wrote, and a git
 repo is reachable.**
 
@@ -222,14 +222,14 @@ A pointer at something **not on the map** does not get taught on the spot - rout
 **Steps:**
 1. Read that ONE topic brief. Missing or thin (a fresh row from TAILOR) - write it now to the full ten-section contract.
 2. Not yet `[scaffolded]` - scaffold now: scrape per the exercise spec, author `.gitignore` if orphan, commit with the seed message. **Local only unless the learner explicitly authorized pushing this repo's remote** (see Blast radius). This lands BEFORE the lesson, same turn (Who drives what).
-3. Compile a full learn-with-reps session: **lineage and synergy first** (Teach first principles), then dense blocks, anchors from the profile, reps that end with the learner WRITING CODE into the exercise worktree and committing it.
+3. Compile a full mentoring session per `SKILL.md`: **lineage and synergy first** (Teach first principles), then dense blocks, anchors from the profile, reps that end with the learner WRITING CODE into the exercise worktree and committing it.
 4. The turn ends with the learner building. Flip the MAP row to `[building]` (write rules apply).
 
 **Scope pointer vs answer key - decide it, never imply it.** A ref the learner points at sets the **scope**. The answer key **defaults to that same ref**, which is what you want when rebuilding work that just shipped. When the region has moved on since, the key may instead be the current tip - or the two may deliberately differ (rebuild what shipped, then read forward to see how it changed). Pick explicitly, tell the learner in one line which they are rebuilding against, and record BOTH refs in the brief's `## Ground truth`.
 
 ### GRADE - review the learner's commit
 1. Walk the diff ladder (Reading the learner's work). Two comparisons matter: **theirs vs the scaffold** (what they actually wrote) and **theirs vs the shipped reference** (convergence AND divergence).
-2. Grade per learn-with-reps' one-screen replay: recap the exercise, digest their code claim-by-claim with checks, classify each divergence as *defensible design choice* vs *gap*. A divergence the learner can justify from the design pressures taught in Lineage is a PASS, not a miss. Where the reference itself carries a shipped defect the learner avoided - say so explicitly; spotting it is the senior rep.
+2. Grade per `SKILL.md`'s one-screen replay: recap the exercise, digest their code claim-by-claim with checks, classify each divergence as *defensible design choice* vs *gap*. A divergence the learner can justify from the design pressures taught in Lineage is a PASS, not a miss. Where the reference itself carries a shipped defect the learner avoided - say so explicitly; spotting it is the senior rep.
 3. Rep debt - the MAP row's `reps:a/p` tail + LEDGER. Status - `[graded]`, or `[owned]` once they defend their divergences in a teach-back.
 4. Closing write batch (write rule 5) + profile wrap-write per the sidecar's wrap contract.
 
@@ -267,7 +267,7 @@ may REQUIRE it.**
 
 ## Anti-patterns
 
-- 🚨 Teaching without learn-with-reps + its profile sidecar loaded - an uncalibrated mentor is the whole failure this family of skills exists to prevent.
+- 🚨 Teaching without `SKILL.md` and `ref/record.md` loaded - an uncalibrated mentor is the whole failure this family of skills exists to prevent.
 - 🚨 **Teaching the API instead of the pressure** - "here's what this does" with no problem-that-existed-first, no origin, no seam. The learner can then only recall, never re-derive - which fails the entire premise of a rebuild.
 - 🚨 **Teaching a module as an island** - no synergy section means the learner rebuilds a part that fits nothing.
 - 🚨 **Reading files to grade instead of reading diffs** - the diff ladder exists because the working tree is noise; the delta is the evidence.
@@ -299,7 +299,7 @@ The whole point of this skill is that the learner did not write the target codeb
 
 ## Distribution
 
-This file ships inside the `learn-with-reps` skill, never inside the target codebase. A
+This file ships inside the `learn` skill, never inside the target codebase. A
 teammate installs that one skill into their own agent, runs `bin/install.sh` once to put
 their learner record on the machine, then asks for a survey of whatever repo they want to
 own. Per-user pointers to active tracks (host, repo path, syllabus worktree) live in a
