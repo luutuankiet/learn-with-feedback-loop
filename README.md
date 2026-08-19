@@ -402,22 +402,29 @@ One plugin. In Claude Code:
 
 That is enough to start. The mentoring discipline works immediately, with no
 record and no further setup — it is deliberately blind to the filesystem, so it
-runs unchanged in a chat window, a sandbox, or another vendor's agent.
+runs unchanged in a chat window, a sandbox, or another vendor's agent. What it
+cannot do yet is remember you between sessions, or start itself.
 
-To keep a record that survives across sessions and projects, run the installer
-**once per machine**:
+Both of those arrive in one act. Run the installer **once per machine**:
 
 ```bash
 <skill dir>/bin/install.sh <your-private-git-url> [path]
 ```
+
+**That command is the opt-in, and it changes what an ordinary day looks like.**
+From then on this machine keeps a record across sessions and projects, *and*
+every ordinary session on it — including the ones that have nothing to do with
+learning — starts holding your card and may
+[nudge you once](#the-nudge--how-mode-two-actually-starts). Skip it and neither
+exists: a plugin install on its own registers nothing, so there is nothing to
+fire and nothing to fail.
 
 The plugin lives in a cache whose path differs per machine, so the simplest way to
 run that is to ask your session — *"set up my learner record, the remote is `…`"* —
 and let it use the skill directory it just loaded. The script clones the record, or
 seeds an empty remote from the shipped skeleton, then writes the address into your
 user-scope instruction file so every future session can find it — and in the same
-act registers the [session-start hook](#the-nudge--how-mode-two-actually-starts)
-that delivers the card. `install.sh --where`
+act registers the session-start hook that delivers the card. `install.sh --where`
 prints the recorded path without changing anything, which is how you check whether
 a machine is already set up.
 
@@ -434,6 +441,12 @@ Three things about that command are not incidental:
   The installer adopts an existing remote rather than seeding over it. If you are
   unsure whether you created one, assume you did — a wrong yes costs a failed
   clone, a wrong no costs a permanently split history.
+
+**And opting back out is one edit.** Everything the installer wrote into your
+instruction file sits between two comment markers. Delete that block and the
+address goes with it, so the card has nothing to sample and stops arriving — the
+nudges stop with it, and nothing else about the plugin changes. There is no
+settings file to go and find, and no flag to remember.
 
 Keep that repository **private**. It is the most personal thing in the system and
 it grows for years.
