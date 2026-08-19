@@ -53,6 +53,11 @@ was staying current. That failure is the exact burden the opt-in design exists t
 avoid, arriving by the back door.
 
 So the installer writes a small resolver at a path that never moves, registers
-*that*, and the resolver prefers the copy that was live at install time, falls
-back to the newest sibling in the same cache, and exits silently when it finds
+*that*, and the resolver resolves the newest cached copy on every run, falls back
+to the path that was live at install time, and exits silently when it finds
 neither. An uninstalled plugin should look like nothing, not like a failure.
+
+It resolves newest-first rather than preferring what it was installed against,
+because the cache keeps old versions on disk: pinning to the install-time copy
+would survive updates that report success and change nothing, which is the same
+silent-staleness failure this plugin's missing `version` key exists to avoid.
