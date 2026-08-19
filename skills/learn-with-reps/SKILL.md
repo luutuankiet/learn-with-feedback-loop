@@ -193,8 +193,23 @@ Triggers: "just tell me", "skip the drill", "give me the shape", "let me get uns
 
 ## Probe tones + question types
 
-Tones: **Gentle Probe** (surface their reasoning) · **Direct Challenge** (confidently wrong) · **Socratic Counter** (blind spot → edge case) · **Menu + Devil's Advocate** (genuine trade-off).
-Types: **Motivation** ("what's the goal?") · **Concreteness** ("walk me through with these values") · **Clarification** · **Success** ("how will you know it's right?").
+**Concept before code.** No fix is shown until the concept under it has been established — otherwise they copy a patch and own nothing.
+
+**Pick the tone that fits what they just wrote:**
+
+| Tone | Use when | Example |
+|---|---|---|
+| **Gentle probe** | they need to surface their own reasoning | *"What draws you to that approach?"* / *"Walk me through what `res` would be here."* |
+| **Direct challenge** | they are confidently wrong | *"I'd push back — `const` doesn't allow that. What does it actually lock down?"* |
+| **Socratic counter** | a blind spot needs an edge case to expose it | *"If your `else` returns Y, what happens when the knight is awake but the archer is asleep?"* |
+| **Menu + devil's advocate** | a genuine trade-off is worth naming | *"Two ways to handle this: (A) declare `let` outside and assign inside, (B) return from each branch. Which feels cleaner to you, and why?"* |
+
+**Question types** — each forces a different thing out of them:
+
+- **Motivation** — *"What's the goal of this function?"* Forces intent before syntax.
+- **Concreteness** — *"Walk me through it with `petDog=true`, `archer=false`. What's `res`?"* Forces execution over description.
+- **Clarification** — *"When you say 'intermediate calls', do you mean assignment inside branches, or chaining?"* Where their word is vague, the model underneath it is vague.
+- **Success** — *"How will you know your fix is right?"* Forces the test to be articulated before the code.
 
 ## Psychological safety — make it safe to be wrong
 
@@ -229,8 +244,9 @@ One line per item. This is the map that lets them navigate the ambiguity instead
 - 🚨 **Skipping re-articulate** — explained the fix, never had them say it back. Ownership didn't transfer.
 - 🚨 **"Do you understand?"** — yes/no hides the gap. Always teach-back form.
 - 🚨 **Question dump** — N questions; they chase one, the rest let weak answers slide.
-- 🚨 **Interrogation** — a probe that doesn't build on their last answer.
-- 🚨 **Checklist walking** — marching topics regardless of where they're weak. Follow the misses.
+- 🚨 **Interrogation** — a probe that doesn't build on their last answer. Every new probe responds to what they just wrote.
+- 🚨 **Piecemeal probe** — one question fired into a void, with nothing saying where the thread goes next. Name it — *"once we settle the syntax, we'll look at where `res` actually lives"* — which is the navigation recap's job, not a hint at this rep's answer.
+- 🚨 **Checklist walking** — marching your internal list of concepts-in-play regardless of where they're weak. Follow the misses; if they nail the first concept fast, skip ahead.
 - 🚨 **Auto-momentum / silent mode-shift** — switching modes without the learner asking.
 - 🚨 **Explaining for explanation's sake** — features without the problem that birthed them; teaching consumption, not building.
 - 🚨 **Context-blind grading** — "correct ✓" with no rep-recap or answer digest; the learner can't tell what it refers to a day later.
