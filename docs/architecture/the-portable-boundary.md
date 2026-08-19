@@ -6,7 +6,7 @@ verified: 2026-08-19
 
 # The portable boundary
 
-The system is one skill, `skills/learn-with-reps/`. Its `SKILL.md` opens with a
+The system is one skill, `skills/learn/`. Its `SKILL.md` opens with a
 routing block and then carries the entire mentoring discipline. Two capabilities
 that need a disk live beside it as reference files, loaded only when their
 precondition holds. Knowing which side of that line you are editing is the single
@@ -27,7 +27,7 @@ record's address.
 
 ## What proves it
 
-Three assertions at the end of `skills/learn-with-reps/bin/smoke.sh`:
+Three assertions at the end of `skills/learn/bin/smoke.sh`:
 
 - `SKILL.md` names no absolute path and no home directory
 - `SKILL.md` does not carry the record's address marker

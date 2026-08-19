@@ -1,6 +1,8 @@
 # learn-with-feedback-loop
 
-A personal learning system, published as Claude Code skills. The model already
+A personal learning system, published as the Claude Code plugin
+`learn-with-feedback-loop`; its one skill is invoked as
+`learn-with-feedback-loop:learn`. The model already
 knows the material; what this project stores is **who the learner is** — anchors,
 gaps, phrasings, preferences — so a session resumes where the last one stopped.
 
@@ -26,7 +28,9 @@ gaps, phrasings, preferences — so a session resumes where the last one stopped
 ## Layout
 
 ```
-skills/learn-with-reps/       the one skill — router + the mentoring discipline
+.claude-plugin/plugin.json    the manifest; its skills[] allowlist names paths,
+                              and it carries no version key on purpose (adr 0003)
+skills/learn/                 the one skill — router + the mentoring discipline
   SKILL.md                    always loaded; names no path, no storage
   ref/record.md               the learner record: boot, harvest, the wrap-write
   ref/rebuild.md              graded rebuild over a repo the learner never wrote
@@ -47,7 +51,7 @@ and a row in the router, never as prose in `SKILL.md`.
 No build step and no linter — this is markdown and bash. Two checks exist:
 
 ```sh
-skills/learn-with-reps/bin/smoke.sh       # 34 assertions: boot, install, the boundary
+skills/learn/bin/smoke.sh       # 34 assertions: boot, install, the boundary
 scripts/gen-docs-index.sh --check         # non-zero when a docs index is stale
 ```
 

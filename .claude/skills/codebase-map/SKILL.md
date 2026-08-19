@@ -41,19 +41,19 @@ fix it in the page and re-date it — that is a one-line edit and it is how the 
 stays worth having.
 
 Locations are given at all because the files that matter most here are big:
-`skills/rebuild-to-own/SKILL.md` is 282 lines and `skills/learn-with-reps/SKILL.md`
+`skills/rebuild-to-own/SKILL.md` is 282 lines and `skills/learn/SKILL.md`
 is 216. "It's in the skill file" is not an answer.
 
 ## What this map does not tell you
 
 It tells you **where**, not **why it is dangerous**. Some areas below have failure
 modes that produce no error at all. The one test runner here,
-`skills/learn-with-reps-gsd/bin/smoke.sh`, covers the boot script and nothing
+`skills/learn/bin/smoke.sh`, covers the boot script and nothing
 else, so most of this tree still fails silently. Those failures are catalogued
 separately, by symptom, in the `repo-maintenance` skill and in
 [docs/README.md](../../../docs/README.md).
 
-The single most fragile path is `skills/learn-with-reps/SKILL.md`. It is
+The single most fragile path is `skills/learn/SKILL.md`. It is
 **filesystem-blind by design**, and adding any path, filename or storage reference
 to it silently destroys the portability the whole two-skill split exists to
 protect. Nothing detects that. If you are about to edit it, read

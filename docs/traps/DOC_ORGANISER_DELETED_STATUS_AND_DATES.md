@@ -27,7 +27,7 @@ is status.** A topic page's entire value is that it says this person got to
 unanswered reps outstanding. Strip the fields and the remaining prose is a topic
 list anyone could have written.
 
-`skills/learn-with-reps/ref/record.md` states the prohibition directly:
+`skills/learn/ref/record.md` states the prohibition directly:
 
 > **No general-purpose documentation organiser is ever run over this tree**, and
 > there is nothing to fork from one.
@@ -40,7 +40,7 @@ is a silent downgrade of the learner's history, not a corruption you can detect.
 
 So the fix is procedural, and it is the only one available:
 
-- Run `skills/learn-with-reps/ref/profile-housekeeping.md` and nothing else. It is
+- Run `skills/learn/ref/profile-housekeeping.md` and nothing else. It is
   a schema-aware runbook for exactly this tree: prune dead topics, merge
   duplicates, repair broken anchor edges, regenerate the index.
 - Give a housekeeping pass its **own session with a fresh context window**. Never
@@ -53,7 +53,7 @@ So the fix is procedural, and it is the only one available:
 
 Before any bulk edit to the record, confirm the pass you are about to run knows
 the frontmatter schema in
-`skills/learn-with-reps/ref/profile-schema.md`. If it does not — if it infers
+`skills/learn/ref/profile-schema.md`. If it does not — if it infers
 structure rather than being told it — it is the wrong tool. After the pass, the
 boot's derived digest should still distinguish `ACTIVE`, `RUSTY` and `UNVERIFIED`;
 if every topic has collapsed into one bucket, fields were removed.
