@@ -408,6 +408,12 @@ fi
 #
 # A filter over the same scan -- same script, same table, no second store.
 # Terms are ANDed: `owned & last>60d`.
+#
+# The scan is read twice. The first pass only collects which slugs exist, which
+# is what `broken-anchor` needs and no other term does: a dangling edge is not a
+# property of the row, it is a property of the row against the whole record. The
+# boot's warning line counts the same thing; this is where you find out *which*
+# pages it is counting, and repairing them is impossible without that list.
 
 if [ "$MODE" = query ]; then
   if [ -z "$PRED" ]; then
@@ -422,6 +428,7 @@ if [ "$MODE" = query ]; then
       if (t == "rusty")                 return ($2 == "owned" && $12 > rusty)
       if (t == "unverified")            return ($4 == "asserted")
       if (t == "active")                return ($2 == "learning" && $9 > 0)
+      if (t == "broken-anchor")         return ($6 != "" && !($6 in have))
       if (t ~ /^last>[0-9]+d$/) { v = t; gsub(/[^0-9]/, "", v); return ($12 > v + 0) }
       if (t ~ /^last<[0-9]+d$/) { v = t; gsub(/[^0-9]/, "", v); return ($12 < v + 0) }
       i = index(t, "=")
@@ -439,13 +446,14 @@ if [ "$MODE" = query ]; then
       for (i = 1; i <= n; i++) gsub(/^[ \t]+|[ \t]+$/, "", terms[i])
       printf "%-28s %-9s %-16s %-6s %-11s %s\n", "topic", "status", "track", "reps", "last", "age"
     }
+    NR == FNR { have[$1]; next }
     {
       for (i = 1; i <= n; i++) if (!match_term(terms[i])) next
       printf "%-28s %-9s %-16s %-6s %-11s %dd\n", $1, $2, $3, $7 "/" $8, $11, $12
       hits++
     }
-    END { if (!bad) printf "\n%d of %d topics\n", hits + 0, NR }
-  ' "$SCAN"
+    END { if (!bad) printf "\n%d of %d topics\n", hits + 0, FNR }
+  ' "$SCAN" "$SCAN"
   exit 0
 fi
 

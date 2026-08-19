@@ -26,7 +26,7 @@ Any one is sufficient:
 
 | Trigger | Detect |
 |---|---|
-| **Broken anchors** | the boot's warning line reports a non-zero count — the one genuine corruption, and the only trigger that is urgent |
+| **Broken anchors** | the boot's warning line reports a non-zero count — the one genuine corruption, and the only trigger that is urgent. `--query 'broken-anchor'` names the pages |
 | Stale backlog | `gap` topics untouched past the long threshold, accumulating faster than they are opened |
 | Unverified pile-up | many `asserted` topics — sessions are opening topics and not closing them |
 | Boot feels heavy | the digest is no longer a digest, or the total-topic line is doing all the work |
@@ -38,14 +38,18 @@ Backlog is not an emergency. The boot's housekeeping line is one line at the bot
 
 ## 2 · Measure before touching anything
 
-Never diagnose from feel. Everything below is a `query` against the same scan the boot uses — there is no second store to consult.
+Never diagnose from feel. Everything below is a `--query` against the same scan the boot uses — there is no second store to consult. `--query` is a flag and its predicate is one argument, so quote it; every line here is copy-pasteable as written.
 
 ```bash
-<skill dir>/bin/boot.sh <record root> query 'anchor-broken'     # dangling edges
-<skill dir>/bin/boot.sh <record root> query 'earned_by=asserted'
-<skill dir>/bin/boot.sh <record root> query 'gap & last>180d'
-<skill dir>/bin/boot.sh <record root> query --all | wc -l       # total topics
+<skill dir>/bin/boot.sh <record root> --query 'broken-anchor'     # dangling edges
+<skill dir>/bin/boot.sh <record root> --query 'earned_by=asserted'
+<skill dir>/bin/boot.sh <record root> --query 'gap & last>180d'
+<skill dir>/bin/boot.sh <record root> --query 'all'               # trailer gives the total
 ```
+
+Every query ends in an `N of M topics` trailer, so the total falls out of the last one — do not pipe it through `wc -l`, which counts the header and the trailer too.
+
+`broken-anchor` is the drill-down behind the boot's warning line: the boot says how many dangling edges there are, this says which pages carry them. The counts agree because both derive from the same scan. Nothing else in §2 is urgent — this one is.
 
 Two shapes worth separating, because they need opposite fixes:
 
@@ -65,7 +69,7 @@ Two shapes worth separating, because they need opposite fixes:
 A dedicated session with a fresh context window. Never tack it onto the end of a learning session. Read `ref/profile-schema.md` in full first — it defines what is stored and what must never be.
 
 1. **Commit first.** The tree is git; a clean starting point is the whole safety story. Nothing below is destructive once that holds.
-2. **Repair broken anchors.** Every `anchor` must name a topic page that exists. A dangling edge silently breaks the adjacency ranking, which then quietly ranks against nothing.
+2. **Repair broken anchors.** Every `anchor` must name a topic page that exists. A dangling edge silently breaks the adjacency ranking, which then quietly ranks against nothing. `--query 'broken-anchor'` lists the pages to open; the bad value is in the page's own frontmatter.
 3. **Merge duplicates.** Two pages for one idea split its history. Keep the one with the learner's own model line; fold the other's `seen_in`, `touches` and open reps into it and delete it.
 4. **Prune the dead.** A `gap` topic nobody has touched in six months was never a gap, it was a passing mention. Delete it — git keeps it, and it will resurface honestly if it matters.
 5. **Rewrite Level 0 in place.** Distil, never accumulate; the v1 profile bloated by appending. Confirm the mission still reads true — it is standing context for every session. **Then check the card markers, in the same breath as the rewrite.** The spans between `<!-- BEGIN CARD -->` and `<!-- END CARD -->` are what a shipping session gets instead of this page, this pass is their only maintainer, and a rewrite is exactly when material moves out from between them. Keep the spans short — anchors and the mission, not the page — and move a marker whenever you move what it wrapped.
@@ -96,7 +100,7 @@ And anything that changes how the record is *read* must be checked against every
 - Boot the record and confirm Level 0 and all three derived sections render.
 - Render the card (`--card`) and read it as a stranger would: it must carry the anchors and the mission, nothing else from the page, and no warning about missing markers.
 - `check` exits clean; the index matches the pages.
-- Zero broken anchors.
+- Zero broken anchors — `--query 'broken-anchor'` returns `0 of N topics`.
 - No derived field appears in any page's frontmatter — see the derived table in `ref/profile-schema.md`. One is a bug.
 - No orphan: every file added under the skill directory is pointed at from `SKILL.md`.
 
