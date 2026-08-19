@@ -142,7 +142,7 @@ The full structure and the reasoning behind it ship with the sidecar at `skills/
 
 ## Lineage
 
-This repo began as `gsd-mentor`, a single always-on mentor *agent* with a curated wiki. Over several versions it shed everything that wasn't pulling its weight — v0.2 retired concept pages, v0.3 went profile-only and dropped its skills, and **v0.4 retired the agent itself** in favor of the two portable skills above, migrating the profile to the 3-tier schema. The retired agent and the full history live in the git log and `releases/`.
+This repo began as `gsd-mentor`, a single always-on mentor *agent* with a curated wiki. Over several versions it shed everything that wasn't pulling its weight — v0.2 retired concept pages, v0.3 went profile-only and dropped its skills, and **v0.4 retired the agent itself** in favor of the two portable skills above, migrating the profile to the 3-tier schema. That history lived in the predecessor repository; this one starts from its endpoint.
 
 ## Acknowledgements
 

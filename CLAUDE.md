@@ -17,7 +17,6 @@ skills/
   rebuild-to-own/templates/                   the syllabus docs a track is stamped out from
 PROFILE.template.md                           seed template (3-tier schema)
 README.md                                     install + usage + pitch
-releases/                                     version notes
 ```
 
 **Templates only.** This repo publishes structure, never instances. A personal profile, a
@@ -45,4 +44,4 @@ loaded it). This repo keeps only `PROFILE.template.md`.
 
 ## Lineage
 
-Began as `gsd-mentor` (a single always-on agent + curated wiki). Successive versions cut everything that wasn't pulling its weight: v0.2 retired concept pages, v0.3 went profile-only and dropped the skills, **v0.4 retired the agent itself** in favor of the two portable skills above and migrated the profile to the 3-tier schema. History lives in `releases/` and the git log.
+Began as `gsd-mentor` (a single always-on agent + curated wiki). Successive versions cut everything that wasn't pulling its weight: v0.2 retired concept pages, v0.3 went profile-only and dropped the skills, **v0.4 retired the agent itself** in favor of the two portable skills above and migrated the profile to the 3-tier schema. That history lived in the predecessor repository and does not travel here; this tree starts from its endpoint.
