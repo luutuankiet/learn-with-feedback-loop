@@ -156,6 +156,7 @@ flowchart TD
 | 13 | Every candidate is persisted, not just the chosen one | Write the brief for the pick, discard the rest | The menu is the expensive artifact - it costs a full survey to produce. Discarding what the learner passed over guarantees re-deriving it later from the same unchanged code. |
 | 14 | Wayfinder is the default survey shape | Full-tree roadmap up front | The measured behaviour is a couple of modules and then appetite runs out. Growing outward from a tip keeps every survey proportional to intent; breadth stays available on request. |
 | 15 | TAILOR may overwrite queued rows freely | Preserve all map history | Learning state lives in the profile; the map only needs current coordinates. Rows at `[building]` or beyond are exempt - that is evidence of work, not a plan. |
+| 16 | TAILOR, TEACH and GRADE are **phases**, not modes; the two modes are ship and take-over | Keep calling them modes, and name the work cycle something else | Supersedes the wording of rows 10 and 11, not their substance - the three stay separate, selection stays a precedence rule. The word was carrying two altitudes at once: the three are the internals of taking one topic over, while the cycle the learner actually lives in is shipping and then taking something over. The outer pair is the one that has to be sayable, because it is the one the learner is in. |
 
 ## Invariants
 
