@@ -1,154 +1,399 @@
 # learn-with-feedback-loop
 
-*(the discipline began as `gsd-mentor` — see Lineage below)*
+**You are shipping more code than you understand.** An agent reads the codebase,
+writes the change, explains itself well, and you say ship it. The work is correct.
+The judgment that produced it accrued to the agent, and the transcript that held
+it is gone the moment you start a fresh session — which you do deliberately, to
+keep the context clean. Nothing is wrong, and nothing is landing.
 
-A Claude Code **skill** that mentors you through any technical or programming concept by making you *write* — because writing is thinking, and reading isn't. For self-directed learners who want to genuinely **own** a concept, a codebase, a PR, or a language feature — not just skim it.
+This plugin closes that loop. It runs on **two modes, in order**:
 
-> The model already knows the material. What it's missing is *you* — your fluent language, your gaps, your phrasings. This skill supplies both halves: a portable mentoring discipline, and an optional memory of who you are.
+> **You ship.** Normal work, normal sessions, no learning skill loaded. This is
+> not the part you fix — it is the part that produces the material. Every fix you
+> shipped is a candidate for something you could own.
+>
+> **Then you take one thing over.** A separate session, later. It reads what you
+> actually shipped — the commits, the diffs, the docs the work updated — ranks the
+> candidates by how close each one sits to what you genuinely hold already, and
+> drills the closest one until you can say it back in your own words. That is the
+> step that turns a candidate into something that is yours.
 
-<img width="1062" height="1232" alt="demo" src="https://github.com/user-attachments/assets/41fca8b3-bff4-4ff0-a65b-0a25a66ede47" />
+Two things make the second mode work rather than feel like homework.
 
+**A record that survives the session.** The mentor knows what you own, what you
+half-own, what you have never once explained out loud, and what has gone quiet
+long enough to be worth re-checking. It lives in a private git repository of your
+own — one page per topic, forever-growing, never in this repository — so a session
+six weeks from now opens where the last one stopped instead of introducing itself.
 
+**A mentor that meets you inside the work you were already doing.** There is no
+syllabus and no separate study hour. The material is the thing you shipped on
+Tuesday, and the reason you remember it is that you were already holding the
+context. Ownership is earned exactly one way: you explain it, unprompted, in your
+own words. Nodding along at a good explanation earns nothing, and the record says
+so in plain language — a topic you skipped for time reads as *asserted*, with your
+own model line left empty, and no future session can mistake that for knowledge.
 
-## One skill, three capabilities
+The direction of travel is the point. The share of the code the agent writes should
+trend down, the share you write should trend up, and the scaffold should fade
+rather than get more comfortable.
 
-It installs as a single skill. `SKILL.md` opens with a routing block and then carries the whole mentoring discipline; the two capabilities that need a disk sit beside it as reference files, and load only when they can actually work.
+---
 
-| capability | what it is | needs a filesystem? |
-|---|---|---|
-| **the discipline** (`SKILL.md`) | Dense, Socratic, never spoon-feeds. Builds a picture of you on the fly and drills write-to-think reps until you can teach the concept back. | **No** — fully portable. Any Claude Code session, any agent, even pasted into a bare chat. |
-| **the learner record** (`ref/record.md`) | A persistent memory of who you are, spanning every project. Read at session start so the mentor already knows your level; written at the end with what landed. | **Yes** — a private git repo at an address stated once per machine. |
-| **the graded rebuild** (`ref/rebuild.md`) | Turns a codebase you own on paper but never wrote into an exercism-style rebuild curriculum: one branch per topic, the agent scrapes each module into a scaffold, you rebuild it, and the shipped implementation in the same repo is the answer key. | **Yes** — git-native; it lives on branches and worktrees. |
+## What a session actually looks like
 
-`SKILL.md` stays environment-blind on purpose, so you can lift the discipline anywhere — into a bare chat window with no filesystem at all. Everything that touches a disk lives in the reference files, and a session that can't reach one simply runs without it.
+Prose about a mentoring discipline is cheap. Here is the loop end to end, in a
+generic codebase, across a deliberate context wipe. Judge it in ten seconds.
 
-## The pitch — why "reps"
+### Tuesday — you ship. No learning skill is loaded.
 
-Most LLM tutors explain well and leave you nodding. You read, you feel like you understood, you move on — and nothing sticks. The only knowledge that lasts is the kind you produced yourself. So `learn` flips the success metric: **a turn succeeds only when it gets you to write** — to articulate your understanding, to attempt the rep it set, to expose the gap it should drill next. Every turn ends with an invitation to write. You succeed when you can explain it to someone else.
+```
+━━━━━━━━ SHIPPING SESSION · Tue ━━━━━━━━━━━━━━━━━━━━━━
+ 1│ you   │ the nightly load double-counts after a
+ 2│       │ retry. fix it.
+ 3│ agent │ [reads loader, adds a merge key, updates
+ 4│       │  docs/pipelines/nightly.md]
+ 5│ agent │ Done. Root cause was an INSERT on retry
+ 6│       │ where the first attempt had partially
+ 7│       │ committed. Switched to MERGE on
+ 8│       │ (load_date, source_id).
+ 9│ you   │ ship it
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+```
 
-It does this with **dense, Socratic** turns: rich context (concept + rationale + the shape + a worked example with the punchline missing + an anchor to what you already know) followed by a substantive question — then it stops and waits. It never leaks the answer. It makes it safe to be wrong, celebrates real wins, and ends each turn with a plain-English recap so you always know where you are.
+Nothing learning-specific is written. No trailer, no note, no residue in a
+repository your colleagues share. Line **4** is the only thing that matters later
+— and it happened for shipping reasons, not for this.
+
+The session is then closed and its context discarded, as usual.
+
+### Friday — you take it over. Turn one.
+
+```
+━━━━━━━━ LEARNING SESSION · Fri ━━━━━━━━━━━━━━━━━━━━━━
+ 1│ you   │ let's learn
+ 2│ agent │ [resolves record; runs
+ 3│       │  <skill>/bin/boot.sh <record>]
+━━━━━━━━ boot.sh output ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+ 4│ LEARNER
+ 5│   taught as a builder · dense · first
+ 6│   principles · brief history · why built
+ 7│   this way · rubber-duck before moving on
+ 8│   mission: agent writes less each month
+ 9│
+10│ ACTIVE — learning, open reps (2) — cap is 3
+11│   lookback-windows   1/5  3d  the nightly
+12│                              cost spike
+13│   cte-materialisation 0/3 11d  —
+14│
+15│ RUSTY — owned, untouched >60d (1)
+16│   batch-reprocessing  71d  probe first
+17│
+18│ UNVERIFIED — never explained aloud (4)
+19│   retry-backoff      asserted  2026-05-11
+20│
+21│ 47 topics total. Full ledger: boot.sh --query all
+22│ ⚠ 4 unverified · 1 rusty · 0 broken anchors
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+```
+
+One call, one output, bounded a year in. Lines **4–8** are the hand-written page
+— the only part of the record a person maintains, and the one thing a learning
+session never writes. Lines **10–19** are computed from every topic page on every
+run, so they cannot disagree with the record.
+
+### Harvest, then the menu
+
+```
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+ 1│ agent │ [git log --since=7d; reads
+ 2│       │  docs/pipelines/nightly.md]
+ 3│ agent │ Tuesday you fixed the nightly double-
+ 4│       │ count. Three things sit under that fix.
+ 5│       │ Ranked by what you already hold:
+ 6│       │
+ 7│       │ 1. idempotent merges — sits directly on
+ 8│       │    batch-reprocessing, which you own
+ 9│       │ 2. transaction boundaries on retry —
+10│       │    one step further out
+11│       │ 3. exactly-once as a claim — mostly
+12│       │    vocabulary, low value right now
+13│       │
+14│       │ I'd take 1. Before I can, one check:
+15│       │ you owned batch-reprocessing in May and
+16│       │ haven't touched it since. In one line —
+17│       │ why does reprocessing a trailing slice
+18│       │ not corrupt anything?
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+```
+
+Lines **7–8** are the ranking: candidates ordered by adjacency to what you
+*genuinely* hold, walked along the record's own anchor edges. Lines **14–18** are
+the rule that keeps it honest — the mentor never asserts your recall back at you.
+A retrieval attempt on a rusty topic is worth more than the re-teach it replaces.
+
+### The rep, and the answer withheld
+
+```
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+ 1│ you   │ because you throw away the whole slice
+ 2│       │ and rewrite it, so there's no state
+ 3│       │ carried between runs
+ 4│ agent │ That holds. And it names the reason
+ 5│       │ the fix worked — the retry was safe
+ 6│       │ once the write stopped depending on
+ 7│       │ what the previous attempt had done.
+ 8│       │
+ 9│       │ Now the harder version. MERGE on
+10│       │ (load_date, source_id) is idempotent
+11│       │ for that loader. Give me one shape of
+12│       │ input where the same MERGE stops being
+13│       │ idempotent — same statement, same key.
+14│ you   │ if two source rows collapse to the
+15│       │ same key? then it depends which one
+16│       │ lands last
+17│ agent │ That's it, and it's the failure that
+18│       │ bites in production rather than in
+19│       │ review. What it's called and what the
+20│       │ engine does about it is the next rep —
+21│       │ but say it back in your own words
+22│       │ first: what is MERGE actually
+23│       │ promising you?
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+```
+
+Lines **19–20** withhold the name on purpose. Line **21** is the sentence that
+becomes your model line — and it is filled only with words you said.
+
+### The wrap — one turn, no ceremony
+
+```
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+ 1│ you   │ merge promises the row ends up in one
+ 2│       │ state, not that it's the state you
+ 3│       │ wanted. ok wrap it up now
+ 4│ agent │ [writes; regenerates INDEX; commits]
+ 5│ agent │ That answer is the whole topic, so
+ 6│       │ it's logged as yours.
+ 7│       │
+ 8│       │ batch-reprocessing came back clean
+ 9│       │ after ten weeks — that's the spacing
+10│       │ working, not luck.
+11│       │
+12│       │ Next time: duplicate keys have a name
+13│       │ and engines have an answer for them.
+14│       │ Three reps waiting.
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+```
+
+Line **4** is the entire cost of wrapping up. Nothing is itemised back at you,
+nothing you skipped is recited, and you never see a file path, a status token or
+a field name. Two of the three menu topics were never opened, so **no page was
+created for either** — mentioning is not engagement, and they will surface again
+the next time you ship something that touches them.
+
+### The same session, scrapped instead
+
+```
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+ 1│ you   │ actually drop it, no time
+ 2│ agent │ Nothing logged. The merge question is
+ 3│       │ still open whenever you come back.
+━━━━━━━━ git status ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+ 4│ nothing to commit, working tree clean
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+```
+
+Line **4** is what makes ten concurrent sessions safe. An abandoned session is
+the **cheapest** outcome for the record, not the messiest — and scrapping is
+obeyed when you say it, never inferred from your mood.
+
+---
+
+## The loop, end to end
+
+```mermaid
+flowchart TB
+    subgraph SHIP["① Shipping session — no learning skill loaded"]
+        S1["you ship with the agent<br/><i>normal work, normal sessions</i>"]
+        S2["durable artifacts<br/>commits · diffs · PR bodies · the repo's own docs"]
+        S1 --> S2
+    end
+
+    subgraph LEARNS["② Learning session — days later, you open it"]
+        L1["resolve the address<br/><i>stated once per machine, never inferred</i>"]
+        L2["one boot call — reads the record<br/>hand-written page verbatim<br/>+ a wholly derived digest"]
+        L3["harvest<br/><i>reads durable artifacts, never a transcript</i>"]
+        L4["rank the candidates by adjacency<br/><i>closest to what you genuinely hold</i>"]
+        L5["the reps<br/><i>dense · Socratic · punchline withheld</i>"]
+        L6["the wrap-write — one turn<br/>topic pages · regenerate index · commit"]
+        L1 --> L2 --> L3 --> L4 --> L5 --> L6
+    end
+
+    subgraph KEEP["③ Maintenance session — separate, ~monthly, fresh context"]
+        M1["measure · prune · merge · repair anchors"]
+        M2["<b>rewrite the hand-written page in place</b>"]
+        M3["regenerate the index · verify"]
+        M1 --> M2 --> M3
+    end
+
+    REC[("the learner record<br/>your own private git repo<br/>one page per topic")]
+
+    S2 -. "read, never written" .-> L3
+    L6 == "writes topic pages only —<br/>never the hand-written page" ==> REC
+    M3 == "the only writer<br/>the hand-written page ever has" ==> REC
+
+    NOGOAL["<b>goal-setting is not an opening step</b><br/>the standing why already rides in the<br/>hand-written page, every session; a<br/>per-session goal is assumed out loud and<br/>corrected in passing, never interviewed"]
+    NOGOAL -.-> L1
+
+    classDef note fill:#fff6d5,stroke:#c9a227,color:#4a3c00;
+    classDef store fill:#eef4ff,stroke:#4a6fa5,color:#12305e;
+    class NOGOAL note;
+    class REC store;
+```
+
+Two properties in that picture are load-bearing and easy to lose in prose.
+
+**Maintenance is its own session, and it is the sole writer of the hand-written
+page.** A learning session writes topic pages and regenerates the index; it never
+touches the page that describes who you are. That single rule is what makes
+concurrent sessions conflict-free rather than nearly conflict-free — and it is
+why the pass runs on its own schedule with a fresh context window instead of being
+tacked onto the end of a session that is already tired.
+
+**Goal-setting is deliberately not a step at the start.** There is no opening
+ceremony, no "what do you want to achieve today". Your standing why lives on the
+hand-written page and rides into every session already; a per-session goal is
+assumed out loud and corrected in passing. A goal fixed up front would fight the
+adjacency ranking — it is a second opinion about the same choice, formed earlier
+with less information.
+
+---
 
 ## Install
 
-```bash
-# 1. Clone (or just grab the skills/ folder)
-git clone https://github.com/luutuankiet/learn-with-feedback-loop.git ~/dev/learn-with-feedback-loop
-cd ~/dev/learn-with-feedback-loop
+One plugin. In Claude Code:
 
-# 2. Copy the skill into your Claude Code project (or ~/.claude for global use)
-mkdir -p ~/dev/myproject/.claude/skills
-cp -r skills/learn ~/dev/myproject/.claude/skills/
+```
+/plugin marketplace add luutuankiet/context-lab
+/plugin install learn-with-feedback-loop@context-lab
 ```
 
-That is enough to start — the discipline works immediately, with no record and no setup.
+That is enough to start. The mentoring discipline works immediately, with no
+record and no further setup — it is deliberately blind to the filesystem, so it
+runs unchanged in a chat window, a sandbox, or another vendor's agent.
 
-To keep a learner record that survives across sessions and projects, run the installer
-**once per machine**. It clones (or creates) a private repo for the record, seeds it from
-the shipped skeleton, and writes the address into your user-scope instruction file so every
-future session can find it:
+To keep a record that survives across sessions and projects, run the installer
+**once per machine**:
 
 ```bash
-# 3. Optional — set up the persistent learner record
-skills/learn/bin/install.sh <your-private-remote> ~/path/for/the/record
+<skill dir>/bin/install.sh <your-private-git-url> [path]
 ```
 
-The address is **stated, never inferred**: nothing guesses the location from where the skill
-happens to sit, because a guess that fails quietly produces a second record and halves your
-history. **Keep that repo private** — it is the most personal thing in the system, and it
-grows for years.
+The plugin lives in a cache whose path differs per machine, so the simplest way to
+run that is to ask your session — *"set up my learner record, the remote is `…`"* —
+and let it use the skill directory it just loaded. The script clones the record, or
+seeds an empty remote from the shipped skeleton, then writes the address into your
+user-scope instruction file so every future session can find it. `install.sh --where`
+prints the recorded path without changing anything, which is how you check whether
+a machine is already set up.
 
-**Tip — symlink instead of copy** if you use these across several projects, so edits to the
-skill never drift between copies:
+Three things about that command are not incidental:
 
-```bash
-ln -s ~/dev/learn-with-feedback-loop/skills/learn ~/dev/myproject/.claude/skills/learn
+- **The URL is always an argument.** This script ships publicly; a private remote
+  baked into it would ship too.
+- **The address is stated, never inferred.** Nothing guesses the location from
+  where the skill happens to sit — it arrives through a plugin cache, so its own
+  path differs on every machine and says nothing about where your record went. A
+  guess that fails quietly produces a *second* record, which halves your history
+  in a way nobody notices for months.
+- **Setting up a second machine? You already have a record.** Pass the same URL.
+  The installer adopts an existing remote rather than seeding over it. If you are
+  unsure whether you created one, assume you did — a wrong yes costs a failed
+  clone, a wrong no costs a permanently split history.
+
+Keep that repository **private**. It is the most personal thing in the system and
+it grows for years.
+
+## Using it
+
+Talk in natural language. There is no slash command:
+
+```
+"let's learn"
+"walk me through this PR so I can own it before I take over"
+"teach me closures — here's the page I'm reading: <paste>"
+"I want to own how auth works in this repo"
 ```
 
-## Usage
+The mentor loads on meaning. If a record is set up and this session can reach a
+filesystem, it boots that too; if not, it builds a picture of you on the fly and
+persists nothing. **You never read the record.** Everything reaches you in plain
+English, in the conversation — never a file path, never a field name.
 
-Just talk in natural language — no slash commands:
+One input caveat worth knowing: the harvest reads your shipping repository's own
+documentation alongside its commits, so it works best when that documentation is
+maintained. That is your responsibility, not the skill's. It consumes those docs,
+never mandates them, and degrades to commits-and-diffs with a one-line notice when
+they are missing.
 
+## Taking over a codebase you never wrote
+
+For a repository rather than a concept, mode two has a heavier form: a graded,
+branch-per-topic rebuild where the shipped implementation is the answer key.
+
+The agent surveys the code and comes back with a menu of 3–8 topics — plus what
+it surveyed and chose to leave out, so you can see the shape of what you are
+skipping. You pick one. It writes the brief against an exact commit, creates the
+exercise branch and worktree, scrapes the reference down to signatures and
+contract comments, and commits that scaffold. You run no git commands.
+
+Then you write the code, commit it, and ask for a grade. It walks the diff against
+the reference and classifies every divergence as a *defensible design choice* or a
+*gap* — a difference you can justify from the design pressures is a pass, not a
+miss. Where the shipped code has a defect you avoided, it says so.
+
+**One repository, one syllabus, forever.** Every session checks for an existing
+track before doing anything, so a codebase is never re-surveyed and a menu you have
+already seen is read back rather than re-invented.
+
+**And the agent never writes the exercise.** It creates branches, scrapes
+scaffolds, teaches and grades. A graded diff of code you did not write measures
+nothing.
+
+## For contributors
+
+`AGENTS.md` is the contract file — read it before changing anything here. The
+short version: `SKILL.md` names no path and no storage location on purpose, and
+`bin/smoke.sh` asserts it; templates ship, instances never do; and the learner's
+record is not in this repository and never will be.
+
+```sh
+skills/learn/bin/smoke.sh          # the assertions
+scripts/gen-docs-index.sh --check  # non-zero when a docs index is stale
 ```
-"Help me learn closures in JS — here's the page I'm reading: <paste>"
-"Walk me through this PR so I can own it before I take over."
-"I'm reading the Next.js routing docs, here's where I'm stuck: <paste>"
-```
 
-The skill starts mentoring. If you set up a record and you're in a filesystem-capable session, it loads that too, so the mentor already knows your level, and it writes back what landed when you wrap up. You never read the record — everything reaches you in plain English, in the conversation.
-
-## Running a session — end to end
-
-Three ways to use it. The dividing line is **which memory a session loads**, and each has a different kickoff. You never type a slash command — the skills load on meaning — but you do need to know which scenario you're in.
-
-### Scenario A — learn a concept, no repo involved
-
-**Loads:** the discipline, plus the record if you keep one. Nothing is written to any repo you ship in; the only durable output is a record delta.
-
-| turn | you | the agent |
-|---|---|---|
-| 1 | "Teach me `<concept>`. Ground it first — I want real sources, not vibes." Paste whatever you're reading, if anything. | Boots your profile by ripgrep so it already knows your level and fluent languages. Echoes back a few bullets of what it understood (so you can correct it before it drills), then teaches dense: the problem that existed first → the origin → the shape with its gotchas → a worked example with the punchline missing → an anchor to a language you already know. Ends with reps. |
-| 2 | Write your answers. Batch them; take an hour if you want. | Replays each rep and your answer side by side with a per-claim verdict, fills the gaps, then re-asks the teach-back — saying the corrected model back **is** the moment it sticks. |
-| 3 | "That's enough for today." | Closing recap: what you own, what's half-owned, what wasn't covered. Writes what landed to your profile. |
-
-### Scenario B — own something in a codebase you didn't write
-
-The most common real case. Often it runs as **two sessions: ship first, then rebuild** — but the entry is anything you can point at: a commit an agent just landed, a module you've never read, or a bare *"how does auth work here?"*
-
-**Session 1 — ship (no learning skills loaded).** Drive the work however you normally do; let the agent build the feature properly and review it. The point is to reach a *correct, idiomatic, reviewed* implementation. That finished code becomes the answer key — so it's worth getting right before you try to reproduce it.
-
-**Session 2 — rebuild.** Fresh session (or compact first). **Loads:** the discipline, the record, and the rebuild reference — the router pulls the last two in as soon as it sees a git repo and a rebuild ask.
-
-| turn | you | the agent |
-|---|---|---|
-| 1 | *"Build me a syllabus from what we just shipped"* — or *"I want to learn how X works here."* | First checks whether this repo already has a track — two git commands, no re-exploration. Then surveys: a commit range if you pointed at one, or **outward from the module you named** through what it imports and what imports it. Comes back with a **menu of 3–8 topics**, one line each — plus, explicitly, **what it surveyed and chose to leave out**, so you can see the shape of what you're skipping. |
-| 2 | Approve the menu, then pick one to start. | Records **every** candidate — the one you picked as a full brief, the rest as one-line queued rows tagged with where they came from, so this menu is never brainstormed again. Then writes the brief (answer key pinned to an exact commit), creates the exercise branch and worktree, scrapes the reference down to signatures + contract comments (+ failing tests where the logic is pure), and commits that scaffold. **You run no git commands.** |
-| — | *Good place to compact.* Everything durable is on disk. | |
-| 3 | "Teach it." | The full lesson: the problem that existed before this component, its origin, the design pressures that produced *this* shape, how it wires to its neighbours and what breaks downstream if that seam moves, the trade-off that survives — **then** the exercise. Closing line names a worktree that already exists with the stubs in it. |
-| 4 | Write the code. Commit it. Compact freely between attempts — your commits are the state. | Idle. **No agent writes code on an exercise branch** — that's the whole point. Stuck learners get taught, never patched. |
-| 5 | "Committed — grade it." | Walks a diff ladder (log → stat → hunks → convergence against the reference), never re-reading files the diff already shows. Replays the exercise and your code claim by claim, and classifies every divergence from the reference as *defensible design choice* or *gap* — a divergence you can justify from the design pressures is a pass, not a miss. Where the shipped code has a defect you avoided, it says so. |
-| 6 | "Wrap up." | Bumps the topic's status, logs the session, updates your profile. Next session picks up from the bookmark. |
-
-### Scenario C — extend the map, any time
-
-*"What's left to learn here?"* / *"Add the billing module."* / *"I want to own this whole repo."*
-
-Surveying and teaching are separate on purpose. This turn only touches docs: the agent extends the existing menu — never starts a second one — proposes the new rows plus what it's leaving out, and **stops for your approval before creating a single branch.** Nothing is taught, nothing is scaffolded. You pick from the menu whenever you're ready, which might be next week.
-
-Two shapes, your choice of ask:
-
-- **Wayfinder** (the usual): name one thing you want to understand. The agent maps it *plus its neighbours* — a short route, not a curriculum — because one module without the things it talks to teaches an island.
-- **Breadth**: a whole tree or a whole sprint, when you genuinely want the full picture up front.
-
-**One repo, one syllabus, forever.** Every session checks whether a track already exists before doing anything else — so the codebase is never re-explored, and a menu you've already seen is read back rather than re-invented. If the map has fallen far behind the code, the agent says so and offers to refresh it, rather than quietly teaching from a stale picture.
-
-### The one rule
-
-**You write the code.** The agent creates branches, scrapes scaffolds, teaches, and grades — it never implements the exercise. A graded diff of code you didn't write measures nothing.
-
-## The learner record (only when a filesystem is reachable)
-
-The record is a forever-growing **3-tier schema** designed to stay ripgrep-fast no matter how big it gets:
-
-- **Learner Core** — who you are (background, fluent anchors, how you learn, preferences). Bounded; rewritten in place.
-- **Topic Ledger** — one line per concept, status-tagged so `rg '^### \['` returns your whole learning map in one shot:<br/>`### [owned] closures — <one-line model> · anchor:python-X · 2026-06-01`
-- **Session Log** — dated entries, rolled up into the archive once they pile up, so the outline never bloats.
-
-The full structure and the reasoning behind it ship at `skills/learn/ref/profile-schema.md`. Read that before reshaping a record.
-
-## Customization
-
-- **Record location** — stated once per machine by `bin/install.sh`, which writes the address into your user-scope instruction file. A rebuild track's `learn/CHARTER.md` may pin a different one, and that pin wins.
-- **Tone / density** — `SKILL.md` and the files under `ref/` are plain markdown. Tune the density, anchors, and register to taste.
-- **Generic-only** — don't want a persistent profile? Leave the record unset. The discipline builds a fresh picture of you each session and persists nothing.
+Documentation is indexed in [docs/README.md](docs/README.md) — architecture pages
+for where behaviour lives, traps for failures with no error message, reference for
+what is expensive to re-derive, and decision records for why the repository is
+shaped the way it is.
 
 ## Lineage
 
-The discipline began as `gsd-mentor`, a single always-on mentor *agent* with a curated wiki. Over several versions it shed everything that wasn't pulling its weight — v0.2 retired concept pages, v0.3 went profile-only and dropped its skills, and **v0.4 retired the agent itself** in favor of the portable skill above, migrating the profile to the 3-tier schema. That history lived in the predecessor repository; this one starts from its endpoint.
+The discipline began as `gsd-mentor`, a single always-on mentor *agent* with a
+curated wiki. Over several versions it shed everything that was not pulling its
+weight — concept pages retired, then the wiki, then the agent itself in favour of
+a portable skill. It was briefly `learn-with-reps`, which named the mechanism; the
+name it carries now names the thing that actually matters, which is the loop
+between shipping and owning. That history lived in a predecessor repository and
+stays there. This one starts from its endpoint, with a clean tree and no history
+carried across.
 
 ## Acknowledgements
 
 - Andrej Karpathy's [LLM Wiki pattern](https://gist.github.com/karpathy/442a6bf555914893e9891c11519de94f) — the architecture this grew from.
 - The "writing = thinking, reading ≠ thinking" philosophy — surfaced through real use, now the central discipline.
+- Vygotsky's zone of proximal development, which names the failure mode this exists to fix: a scaffold that never fades.
 
 ## License
 
