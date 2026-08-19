@@ -493,6 +493,24 @@ EOF
   check "a resolver whose skill directory vanished says nothing" \
     "$("$STALE" 2>/dev/null | wc -c | tr -d ' ')" "0"
 
+  # The other half of the same problem, and the one that fails quietly: the
+  # cache keeps old versions on disk, so a resolver that preferred what it was
+  # installed against would go on running it after every update -- an update
+  # that reports success and changes nothing.
+  CACHE="$WORK/cache"
+  for v in old new; do
+    mkdir -p "$CACHE/$v/skills/learn/bin"
+    printf '#!/usr/bin/env bash\necho %s\n' "$v" > "$CACHE/$v/skills/learn/bin/session-card.sh"
+    chmod +x "$CACHE/$v/skills/learn/bin/session-card.sh"
+  done
+  touch "$CACHE/new/skills/learn/bin/session-card.sh"
+  FRESH="$WORK/fresh-resolver.sh"
+  sed -e "s|^BIN=.*|BIN=\"\"|" \
+      -e "s|^ROOT=.*|ROOT=\"$CACHE\"|" "$RESOLVER" > "$FRESH"
+  chmod +x "$FRESH"
+  check "the resolver runs the newest cached copy, not the installed-against one" \
+    "$("$FRESH")" "new"
+
   # The one that matters: a second machine cloning the SAME remote must adopt
   # the existing record, never seed a rival one.
   export HOME="$WORK/fakehome2"
