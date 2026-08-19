@@ -1,6 +1,6 @@
-# learn-with-reps
+# learn-with-feedback-loop
 
-*(formerly `gsd-mentor` — see Lineage below)*
+*(the discipline began as `gsd-mentor` — see Lineage below)*
 
 A Claude Code **skill** that mentors you through any technical or programming concept by making you *write* — because writing is thinking, and reading isn't. For self-directed learners who want to genuinely **own** a concept, a codebase, a PR, or a language feature — not just skim it.
 
@@ -24,7 +24,7 @@ It installs as a single skill. `SKILL.md` opens with a routing block and then ca
 
 ## The pitch — why "reps"
 
-Most LLM tutors explain well and leave you nodding. You read, you feel like you understood, you move on — and nothing sticks. The only knowledge that lasts is the kind you produced yourself. So `learn-with-reps` flips the success metric: **a turn succeeds only when it gets you to write** — to articulate your understanding, to attempt the rep it set, to expose the gap it should drill next. Every turn ends with an invitation to write. You succeed when you can explain it to someone else.
+Most LLM tutors explain well and leave you nodding. You read, you feel like you understood, you move on — and nothing sticks. The only knowledge that lasts is the kind you produced yourself. So `learn` flips the success metric: **a turn succeeds only when it gets you to write** — to articulate your understanding, to attempt the rep it set, to expose the gap it should drill next. Every turn ends with an invitation to write. You succeed when you can explain it to someone else.
 
 It does this with **dense, Socratic** turns: rich context (concept + rationale + the shape + a worked example with the punchline missing + an anchor to what you already know) followed by a substantive question — then it stops and waits. It never leaks the answer. It makes it safe to be wrong, celebrates real wins, and ends each turn with a plain-English recap so you always know where you are.
 
@@ -32,12 +32,12 @@ It does this with **dense, Socratic** turns: rich context (concept + rationale +
 
 ```bash
 # 1. Clone (or just grab the skills/ folder)
-git clone https://github.com/luutuankiet/gsd-mentor.git ~/dev/gsd-mentor
-cd ~/dev/gsd-mentor
+git clone https://github.com/luutuankiet/learn-with-feedback-loop.git ~/dev/learn-with-feedback-loop
+cd ~/dev/learn-with-feedback-loop
 
 # 2. Copy the skill into your Claude Code project (or ~/.claude for global use)
 mkdir -p ~/dev/myproject/.claude/skills
-cp -r skills/learn-with-reps ~/dev/myproject/.claude/skills/
+cp -r skills/learn ~/dev/myproject/.claude/skills/
 ```
 
 That is enough to start — the discipline works immediately, with no record and no setup.
@@ -49,7 +49,7 @@ future session can find it:
 
 ```bash
 # 3. Optional — set up the persistent learner record
-skills/learn-with-reps/bin/install.sh <your-private-remote> ~/path/for/the/record
+skills/learn/bin/install.sh <your-private-remote> ~/path/for/the/record
 ```
 
 The address is **stated, never inferred**: nothing guesses the location from where the skill
@@ -61,7 +61,7 @@ grows for years.
 skill never drift between copies:
 
 ```bash
-ln -s ~/dev/gsd-mentor/skills/learn-with-reps ~/dev/myproject/.claude/skills/learn-with-reps
+ln -s ~/dev/learn-with-feedback-loop/skills/learn ~/dev/myproject/.claude/skills/learn
 ```
 
 ## Usage
@@ -133,17 +133,17 @@ The record is a forever-growing **3-tier schema** designed to stay ripgrep-fast 
 - **Topic Ledger** — one line per concept, status-tagged so `rg '^### \['` returns your whole learning map in one shot:<br/>`### [owned] closures — <one-line model> · anchor:python-X · 2026-06-01`
 - **Session Log** — dated entries, rolled up into the archive once they pile up, so the outline never bloats.
 
-The full structure and the reasoning behind it ship at `skills/learn-with-reps/ref/profile-schema.md`. Read that before reshaping a record.
+The full structure and the reasoning behind it ship at `skills/learn/ref/profile-schema.md`. Read that before reshaping a record.
 
 ## Customization
 
 - **Record location** — stated once per machine by `bin/install.sh`, which writes the address into your user-scope instruction file. A rebuild track's `learn/CHARTER.md` may pin a different one, and that pin wins.
 - **Tone / density** — `SKILL.md` and the files under `ref/` are plain markdown. Tune the density, anchors, and register to taste.
-- **Generic-only** — don't want a persistent profile? Skip the sidecar. The generic skill builds a fresh picture of you each session and persists nothing.
+- **Generic-only** — don't want a persistent profile? Leave the record unset. The discipline builds a fresh picture of you each session and persists nothing.
 
 ## Lineage
 
-This repo began as `gsd-mentor`, a single always-on mentor *agent* with a curated wiki. Over several versions it shed everything that wasn't pulling its weight — v0.2 retired concept pages, v0.3 went profile-only and dropped its skills, and **v0.4 retired the agent itself** in favor of the two portable skills above, migrating the profile to the 3-tier schema. That history lived in the predecessor repository; this one starts from its endpoint.
+The discipline began as `gsd-mentor`, a single always-on mentor *agent* with a curated wiki. Over several versions it shed everything that wasn't pulling its weight — v0.2 retired concept pages, v0.3 went profile-only and dropped its skills, and **v0.4 retired the agent itself** in favor of the portable skill above, migrating the profile to the 3-tier schema. That history lived in the predecessor repository; this one starts from its endpoint.
 
 ## Acknowledgements
 

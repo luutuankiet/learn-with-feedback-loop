@@ -41,8 +41,8 @@ fix it in the page and re-date it — that is a one-line edit and it is how the 
 stays worth having.
 
 Locations are given at all because the files that matter most here are big:
-`skills/rebuild-to-own/SKILL.md` is 282 lines and `skills/learn/SKILL.md`
-is 216. "It's in the skill file" is not an answer.
+`skills/learn/ref/rebuild.md` is 308 lines and `skills/learn/SKILL.md`
+is 257. "It's in the skill file" is not an answer.
 
 ## What this map does not tell you
 
@@ -55,9 +55,9 @@ separately, by symptom, in the `repo-maintenance` skill and in
 
 The single most fragile path is `skills/learn/SKILL.md`. It is
 **filesystem-blind by design**, and adding any path, filename or storage reference
-to it silently destroys the portability the whole two-skill split exists to
+to it silently destroys the portability the whole routing split exists to
 protect. Nothing detects that. If you are about to edit it, read
-`docs/architecture/the-two-halves.md` first.
+`docs/architecture/the-portable-boundary.md` first.
 
 ## Keeping it accurate
 

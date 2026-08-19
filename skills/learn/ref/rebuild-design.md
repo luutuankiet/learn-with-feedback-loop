@@ -44,7 +44,7 @@ graph TD
   subgraph agent["Agent's own skill repo - portable, shared"]
     S[SKILL.md<br/>operating manual]
     D[DESIGN.md<br/>this file]
-    LWR[learn-with-reps<br/>mentoring discipline]
+    LWR[SKILL.md<br/>mentoring discipline]
     GSD[ref/record.md<br/>the learner record]
     T[template/<br/>new-record seed]
   end
@@ -95,7 +95,7 @@ The roadmap is built from the tree and the diff because **docs drift behind code
 
 ```mermaid
 flowchart TD
-  A[Load learn-with-reps + sidecar + profile] --> B[Syllabus probe + boot greps]
+  A[Load SKILL.md + ref/record.md + the record] --> B[Syllabus probe + boot greps]
   B --> C{Topic selection}
   C -->|explicit pointer| D{On the map?}
   C -->|bookmark: building row| E[Read that ONE topic brief]
@@ -107,7 +107,7 @@ flowchart TD
   F -->|no| G[Scrape reference to scrape-level<br/>commit seed message]
   F -->|yes| H[Teach LINEAGE first:<br/>problem, origin, pressures,<br/>synergy, trade-off]
   G --> H
-  H --> I[Dense learn-with-reps blocks<br/>anchored to profile]
+  H --> I[Dense mentoring blocks<br/>anchored to the record]
   I --> J[Rep = write code, commit it]
   J --> K[Flip MAP row to building]
 ```
@@ -174,7 +174,7 @@ flowchart TD
 
 ```mermaid
 graph LR
-  LWR[learn-with-reps<br/>discipline - portable, fs-blind]
+  LWR[SKILL.md<br/>discipline - portable, fs-blind]
   GSD[ref/record.md<br/>record I/O]
   GRILL[comprehension mentor<br/>can you EXPLAIN it]
   RTO[ref/rebuild.md<br/>can you PRODUCE it]
@@ -185,7 +185,7 @@ graph LR
   GRILL -.same learner,<br/>earlier stage.-> RTO
 ```
 
-The division of labor: **learn-with-reps** owns how to teach, **the sidecar** owns learner memory, **this skill** owns the curriculum-from-a-codebase machinery. Any rule that would apply to teaching in general belongs upstream in learn-with-reps, not here - if a change to this file would improve every mentoring session, it is in the wrong file.
+The division of labor: **`SKILL.md`** owns how to teach, **`ref/record.md`** owns learner memory, **`ref/rebuild.md`** owns the curriculum-from-a-codebase machinery. Any rule that would apply to teaching in general belongs upstream in `SKILL.md`, not here - if a change to this file would improve every mentoring session, it is in the wrong file.
 
 ## Open questions
 

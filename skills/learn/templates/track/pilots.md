@@ -33,10 +33,10 @@ node, expired credentials, a deploy that must run from a different machine.>
 |---|---|---|
 | learn a concept, no code | "teach me `<X>`, ground it first" | reps discipline + profile sidecar |
 | ship work on a project | normal working prompt | project-memory protocol only - no learning skills |
-| get a menu of what to learn here | "what's there to learn in this repo" | learn-with-reps, which loads the rebuild reference |
-| own what a sprint just built | "build me a syllabus from what we just shipped" | learn-with-reps, which loads the rebuild reference |
-| continue an open track | "resume my <repo> rebuild" | learn-with-reps, which loads the rebuild reference |
-| be graded | "committed - grade it" | learn-with-reps, which loads the rebuild reference |
+| get a menu of what to learn here | "what's there to learn in this repo" | learn, which loads the rebuild reference |
+| own what a sprint just built | "build me a syllabus from what we just shipped" | learn, which loads the rebuild reference |
+| continue an open track | "resume my <repo> rebuild" | learn, which loads the rebuild reference |
+| be graded | "committed - grade it" | learn, which loads the rebuild reference |
 
 **Never mix ship mode and learn mode in one session.** Ship mode loads project memory and
 writes code; learn mode loads the profile and refuses to write code on an exercise branch.

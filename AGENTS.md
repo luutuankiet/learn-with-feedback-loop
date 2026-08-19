@@ -51,8 +51,8 @@ and a row in the router, never as prose in `SKILL.md`.
 No build step and no linter — this is markdown and bash. Two checks exist:
 
 ```sh
-skills/learn/bin/smoke.sh       # 34 assertions: boot, install, the boundary
-scripts/gen-docs-index.sh --check         # non-zero when a docs index is stale
+skills/learn/bin/smoke.sh          # 34 assertions: boot, install, the boundary
+scripts/gen-docs-index.sh --check  # non-zero when a docs index is stale
 ```
 
 Do not add a toolchain beyond those.

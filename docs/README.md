@@ -45,5 +45,6 @@ it with a new one rather than editing it.
 - [Move CLAUDE.md's contents into AGENTS.md rather than appending a bridge line](adr/0001-move-claude-md-into-agents-md.md)
 - [Merge the three skills into one, with a router and on-demand references](adr/0002-merge-the-three-skills-into-one.md)
 - [The plugin manifest carries no version, and owns the skills allowlist](adr/0003-the-plugin-manifest-carries-no-version.md)
+- [Name the plugin `learn-with-feedback-loop` and its one skill `learn`](adr/0004-name-the-plugin-and-its-one-skill.md)
 
 <!-- END GENERATED INDEX -->

@@ -42,6 +42,7 @@ it with a new one rather than editing it.
 - [Move CLAUDE.md's contents into AGENTS.md rather than appending a bridge line](../../../docs/adr/0001-move-claude-md-into-agents-md.md)
 - [Merge the three skills into one, with a router and on-demand references](../../../docs/adr/0002-merge-the-three-skills-into-one.md)
 - [The plugin manifest carries no version, and owns the skills allowlist](../../../docs/adr/0003-the-plugin-manifest-carries-no-version.md)
+- [Name the plugin `learn-with-feedback-loop` and its one skill `learn`](../../../docs/adr/0004-name-the-plugin-and-its-one-skill.md)
 
 <!-- END GENERATED INDEX -->
 
@@ -61,7 +62,7 @@ minutes if someone had told you. Three tests, all must pass:
    |---|---|---|
    | make it a **type error** | the mistake is expressible in the type system | none — there is no type system here |
    | make it a **test** | the mistake is an assertable behaviour | `skills/learn/bin/smoke.sh` — bash assertions, no framework; extend it rather than adding one |
-   | **comment at the site** | there is exactly one line where someone could get it wrong | yes — an inline parenthetical in the skill body, as in the sidecar's "Load trigger (lives HERE, never in learn-with-reps)" |
+   | **comment at the site** | there is exactly one line where someone could get it wrong | yes — a line at the site in the skill body, as in the routing block's "If a reference file is not present, carry on without it" in `skills/learn/SKILL.md` |
    | **a doc** | the mistake can be made from any of several files, or from a file that does not exist yet | the catalogue above |
 
    Before adding one, say out loud which single line you would have commented
