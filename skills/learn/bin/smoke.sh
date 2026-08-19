@@ -280,6 +280,20 @@ check "an empty record boots rather than failing" \
   check "no URL writes no marker" \
     "$(grep -c 'learn-with-feedback-loop:record' "$LEARN_AGENTS_FILE")" "0"
 
+  # The no-URL text is the only thing standing between a second workstation and
+  # a rival record. The script is already safe -- it adopts a remote that has a
+  # record -- so what has to hold is that the human is ASKED which machine this
+  # is, told where the second machine's URL comes from, and pushed toward
+  # adopting when unsure. Told "create an empty private repository" flatly, they
+  # will, and nothing downstream can tell it happened.
+  NOURL="$($INSTALL 2>&1 || true)"
+  check "no URL asks whether a record already exists" \
+    "$(printf '%s\n' "$NOURL" | grep -c 'already created a private repository')" "1"
+  check "no URL routes another machine to the same clone URL" \
+    "$(printf '%s\n' "$NOURL" | grep -c 'SAME clone')" "1"
+  check "no URL resolves uncertainty toward adopting, not seeding" \
+    "$(printf '%s\n' "$NOURL" | grep -c 'answer YES')" "1"
+
   $INSTALL "$WORK/remote.git" "$HOME/rec" >/dev/null 2>&1
   check "a first install seeds and records the address" \
     "$($INSTALL --where)" "$HOME/rec"
@@ -323,6 +337,11 @@ check "the always-loaded half names no absolute path" \
   "$(grep -cE '(^|[^a-zA-Z0-9._/-])(/[a-zA-Z]|~/)' "$SKILL_MD")" "0"
 check "the always-loaded half does not carry the record address" \
   "$(grep -c 'learn-with-feedback-loop:record' "$SKILL_MD")" "0"
+
+# The other half of the same guard: the reference an agent reads must pose the
+# question rather than declare the machine a first-timer.
+check "the record reference asks before treating a machine as the first" \
+  "$(grep -c 'have you already created a private repository' "$SKILL_DIR/ref/record.md")" "1"
 
 # A pointer the router names must resolve, or a session silently teaches without it.
 MISSING=0

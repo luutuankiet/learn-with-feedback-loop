@@ -29,7 +29,7 @@ That path is the record root. It is a plain path and **not an import** — the r
 
 **Never infer the address from where this skill happens to sit.** The skill arrives through a plugin cache, so its own location differs on every machine and says nothing about where the record went. Proximity was the old rule and it was wrong: a convention breaks silently the first time a host cannot honour it, and the thing it breaks into is a **second record** — the failure that halves a learning history without anybody noticing. A stated address cannot fail that way. It is either there, or it is missing and says so.
 
-**No marker means the machine was never set up.** That is state A below. Point the learner at `<skill dir>/bin/install.sh`; do not go looking for a record, and do not create one.
+**No marker means _this machine_ was never set up — not that no record exists.** That is state A below, and the distinction is the whole of it: the learner may well already have a record from another workstation, and the setup they need is to clone that one, not to start a rival. Ask before pointing them anywhere; do not go looking for a record yourself, and never create one.
 
 **A pin beats the marker where one exists.** A rebuild track's `learn/CHARTER.md` may name the record for that track. An explicit pointer from the caller wins over the machine-wide one.
 
@@ -95,9 +95,16 @@ The end-of-session write is itself a distillation: a verbose session becomes a f
 
 | state | condition | behaviour |
 |---|---|---|
-| **A** | no marked block in the user-scope file | Genuine first-time setup. Direct the learner to `<skill dir>/bin/install.sh <private-git-url>`, which clones their private record, seeds it from the template beside it if the remote is empty, and writes the marker. **Seeding is legal only there** — never inside a live session. |
+| **A** | no marked block in the user-scope file | This machine is not set up. **Ask the one question below before anything else**, then direct the learner to `<skill dir>/bin/install.sh <private-git-url>` with the answer's URL. It clones their private record, seeds it from the template beside it only if the remote is empty, and writes the marker. **Seeding is legal only there** — never inside a live session. |
 | **B** | marker present, the directory it names is gone | **Stop, and offer the repair in the same breath.** No write, no degraded teaching. |
 | **C** | directory present, remote unreachable | **Proceed normally.** Write to the local clone, commit, skip the push, and say in one line that it did not sync. |
+
+**State A asks one plain question first: _have you already created a private repository for this?_** Yes and no lead to different setups, and only the learner knows which they are in.
+
+- **No** — first workstation. They create an empty private repository, and the script seeds it.
+- **Yes** — another workstation. They paste the **same clone URL** they used the first time, and the script adopts what is already there.
+
+**Uncertainty resolves to yes.** A wrong *yes* costs a failed clone and one more question. A wrong *no* costs a second record — a learning history permanently halved, with nothing downstream able to notice for months. Never break the tie yourself, and never pick the URL for them: listing their private repositories to help them *find* the one to paste is fine, choosing one is not, because choosing wrong fails in exactly the way nothing detects.
 
 **State C is benign.** Offline is common and nothing about it is dangerous: the clone is the working cache, the commit is real, and the next session's `git pull --rebase` reconciles it. Per-topic pages mean there is nothing to conflict on, and an unpushed commit is not a lost one. The one honest requirement is **the one-line notice** — an unpushed record nobody mentioned is a surprise on the next host.
 

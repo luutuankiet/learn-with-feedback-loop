@@ -13,6 +13,14 @@
 # private remote written into it would be published with it. The path is a
 # second argument with a convenience default, because the path is not a secret.
 #
+# Run with no URL, this prints a QUESTION rather than an instruction: have you
+# already created a private repository for this? The old text said "create an
+# empty private repository" unconditionally, which is correct on the first
+# machine and manufactures a second record on every one after it. The script
+# itself was always safe -- hand it a URL whose remote already has a record and
+# it adopts rather than seeds -- so the only hole was the sentence a human
+# reads. Uncertainty resolves to YES, because the costs are wildly asymmetric.
+#
 # What it does, in order: clone the record, seed it if the remote is empty, and
 # write the record's location into the user-scope instruction file as a marked
 # block. Re-running replaces that block in place -- it never duplicates it and
@@ -68,13 +76,25 @@ RECORD="${2-$DEFAULT_PATH}"
 if [ -z "$URL" ]; then
   usage
   say ""
-  say "No URL given. The record lives in a repository you own and nobody else reads:"
+  say "No URL given. The record lives in ONE private repository you own, and every"
+  say "machine you use clones that SAME repository. So answer this first:"
   say ""
-  say "  1. Create an EMPTY, PRIVATE repository on whatever host you use."
-  say "  2. Run this script again with its clone URL."
+  say "  Have you already created a private repository for your learner record?"
   say ""
-  say "It is seeded from the template shipped beside this script, so an empty"
-  say "repository is the expected starting point -- not a problem to solve first."
+  say "  NO  -- this is your first machine. Create an EMPTY, PRIVATE repository on"
+  say "         whatever host you use, then run this script again with its clone"
+  say "         URL. It is seeded from the template shipped beside this script, so"
+  say "         an empty repository is the expected starting point -- not a problem"
+  say "         to solve first."
+  say ""
+  say "  YES -- this is another machine. Run this script again with the SAME clone"
+  say "         URL you used the first time. This script clones what is already"
+  say "         there and seeds nothing over it."
+  say ""
+  say "If you are not sure, answer YES and try a URL you might already own. Being"
+  say "wrong that way costs a failed clone and one more question. Being wrong the"
+  say "other way costs a SECOND record -- a learning history split in half, with"
+  say "nothing downstream able to notice."
   exit 2
 fi
 
