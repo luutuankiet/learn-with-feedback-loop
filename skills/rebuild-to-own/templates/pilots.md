@@ -1,5 +1,6 @@
-<!-- TEMPLATE. Copy to skills/rebuild-to-own/pilots.md (gitignored - personal state, never
-     part of the shipped template) and fill the <angle brackets>.
+<!-- TEMPLATE. Copy to <record root>/pilots.md - inside the learner's own private record,
+     NOT next to the skill - and fill the <angle brackets>. The skill arrives replicated and
+     its location differs per host; the record root is the same everywhere and is writable.
 
      What this file is FOR: the tracks live inside the repos being learned, so nothing in
      this repo knows they exist. This is the index that does - one row per active track,

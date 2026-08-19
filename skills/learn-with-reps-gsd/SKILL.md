@@ -16,13 +16,25 @@ A single, global learner record shared across every project and every learning t
 
 **Resolution returns a root directory, never a filename.** What lives under that root belongs to the record's own layout; this skill hands over a root and asks no further questions about the shape inside it.
 
-**Finding it — resolution order, first hit wins. Resolve it once at session start and use that path for the rest of the session.**
+**Finding it — the address is stated, never inferred.** Resolve it once at session start and use that root for the rest of the session.
 
-1. **Beside the skills directory** — the repo that hosts this skill: `<repo-root>/PROFILE.md`, where `<repo-root>` is the directory containing the `.claude/skills/` that loaded this file. This is the default home and the one to assume unless something says otherwise. Keep the profile in a **private** repo — it is the most personal file in the system.
-2. **A path recorded by the caller** — a rebuild track's `learn/CHARTER.md` records the profile location for that track; a project's own instructions may pin one. An explicit pointer beats the default.
-3. **Ask.** No profile found and none pinned — say so, offer to seed one from `PROFILE.template.md` (shipped in the gsd-mentor repo alongside this skill), and record where it landed.
+The user-scope instruction file this session already loaded carries a marked block, written once per machine by the install script:
 
-**Never guess a path and never create a second profile.** Two profiles is the failure that silently splits a learner's history in half.
+```
+<!-- learn-with-feedback-loop:record -->
+Learner record: /absolute/path/to/the/record
+<!-- /learn-with-feedback-loop:record -->
+```
+
+That path is the record root. It is a plain path and **not an import** — the record is the most personal thing the learner has, and it is not pulled into every unrelated session.
+
+**Never infer the address from where this skill happens to sit.** The skill arrives through a plugin cache, so its own location differs on every machine and says nothing about where the record went. Proximity was the old rule and it was wrong: a convention breaks silently the first time a host cannot honour it, and the thing it breaks into is a **second record** — the failure that halves a learning history without anybody noticing. A stated address cannot fail that way. It is either there, or it is missing and says so.
+
+**No marker means the machine was never set up.** That is state A below. Point the learner at `<skill dir>/bin/install.sh`; do not go looking for a record, and do not create one.
+
+**A pin beats the marker where one exists.** A rebuild track's `learn/CHARTER.md` may name the record for that track. An explicit pointer from the caller wins over the machine-wide one.
+
+**Never guess a path and never create a second record.** Two records is the failure that silently splits a learner's history in half.
 
 - **Structure + rationale:** documented in `ref/profile-schema.md`, sibling of this file. **Read that doc before any non-trivial structural write** — it defines the stored frontmatter, what is derived and must never be stored, the status lifecycle, and how ownership is earned. Don't improvise structure.
 
@@ -53,6 +65,8 @@ Then **hydrate one or two topic bodies by name**, on demand, and nothing else. T
 
 Predicate terms: `all` · `gap` / `learning` / `owned` · `rusty` · `unverified` · `active` · `track=<slug>` · `anchor=<slug>` · `earned_by=<value>` · `last>Nd` / `last<Nd`.
 
+**Setup is a sibling script, run once per machine.** `<skill dir>/bin/install.sh <private-git-url> [path]` clones the record, seeds it from `template/` if the remote is empty, writes the marker, and boots once to prove it reads. `install.sh --where` prints the recorded path without changing anything, which is how you check whether this machine is set up. **The URL is always an argument** — this script ships publicly, so a private remote inside it would ship with it.
+
 **Exit codes carry the failure state.** `3` means the root does not exist — that is state B in the table below, and the answer is to stop and offer the re-clone, never to seed a replacement. `2` is a usage error. The script never creates a record.
 
 ## Harvest — durable artifacts only, and say what you had
@@ -82,8 +96,8 @@ The end-of-session write is itself a distillation: a verbose session becomes a f
 
 | state | condition | behaviour |
 |---|---|---|
-| **A** | no setup pointer at all | Genuine first-time setup. Direct the learner to the install script. **Seeding is legal only here**, and only through that script — never inside a live session. |
-| **B** | pointer present, the directory it names is gone | **Stop, and offer the repair in the same breath.** No write, no degraded teaching. |
+| **A** | no marked block in the user-scope file | Genuine first-time setup. Direct the learner to `<skill dir>/bin/install.sh <private-git-url>`, which clones their private record, seeds it from the template beside it if the remote is empty, and writes the marker. **Seeding is legal only there** — never inside a live session. |
+| **B** | marker present, the directory it names is gone | **Stop, and offer the repair in the same breath.** No write, no degraded teaching. |
 | **C** | directory present, remote unreachable | **Proceed normally.** Write to the local clone, commit, skip the push, and say in one line that it did not sync. |
 
 **State C is benign.** Offline is common and nothing about it is dangerous: the clone is the working cache, the commit is real, and the next session's `git pull --rebase` reconciles it. Per-topic pages mean there is nothing to conflict on, and an unpushed commit is not a lost one. The one honest requirement is **the one-line notice** — an unpushed record nobody mentioned is a surprise on the next host.

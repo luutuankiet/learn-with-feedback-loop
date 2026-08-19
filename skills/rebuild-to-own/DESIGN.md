@@ -46,11 +46,11 @@ graph TD
     D[DESIGN.md<br/>this file]
     LWR[learn-with-reps<br/>mentoring discipline]
     GSD[learn-with-reps-gsd<br/>profile sidecar]
-    T[PROFILE.template.md<br/>new-learner seed]
-    P[pilots.md<br/>untracked - active tracks]
+    T[template/<br/>new-record seed]
   end
-  subgraph learner["Learner's own machine - spans all tracks"]
-    PROF[PROFILE.md<br/>who the learner is]
+  subgraph learner["Learner's own private record - spans all tracks"]
+    PROF[AGENTS.md + topics/<br/>who the learner is]
+    P[pilots.md<br/>active tracks]
   end
   subgraph target["Target repo - usually SOMEONE ELSE'S"]
     MAIN[default branch<br/>the reference / answer key]

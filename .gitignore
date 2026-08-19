@@ -19,13 +19,14 @@ _archive/
 # Reference repos for study
 _ref/
 
-# Per-user pointers to active rebuild tracks (host + paths — not part of the template)
+# Per-user pointers to active rebuild tracks. These now live in the learner's own
+# record, not beside a skill — this rule is the backstop for the old habit.
 skills/*/pilots.md
 
-# The learner's actual profile — personal instance, never published. Only the template ships.
+# The learner's actual record — personal instance, never published. It lives outside
+# this repo entirely now; these are the backstop for a stray copy.
 PROFILE.md
 PROFILE-*.md
-!PROFILE.template.md
 
 # OS noise
 .DS_Store
