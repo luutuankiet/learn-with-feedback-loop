@@ -26,6 +26,8 @@ Hand-written, bounded, rewritten in place, and **never written by a learning ses
 
 It carries: background · fluent anchors · learning traits · coaching points · mentoring preferences · momentum triggers · **the mission** (the standing why, in the learner's own words).
 
+Part of it is marked. A **shipping** session — one that never opened the mentoring skill — gets a name card rather than this page, and the card is the spans between `<!-- BEGIN CARD -->` and `<!-- END CARD -->`, in file order, plus a recent-activity window. Several spans are allowed, so markers go where the material already sits instead of the page being reordered around them. **The boundary is marked and never inferred from heading names**: heading-matching empties the card the day a heading is renamed, with everything still working and nothing to announce it, where a missing marker is announced. Housekeeping is the only writer of this page and therefore the only maintainer of its markers.
+
 It does **not** carry active foci — those are derived. It does not carry recall currency either: durable quotes and analogies live on the topic page they belong to, where the boot surfaces a few derived rather than maintained. Accepted cost: an analogy that explains four unrelated things gets filed under one of them.
 
 ## A topic page

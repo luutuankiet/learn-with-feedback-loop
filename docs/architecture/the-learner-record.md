@@ -84,13 +84,41 @@ not.
 It ships with the plugin rather than with the record —
 `skills/learn/bin/boot.sh` — so everything executable stays inside
 the skill, the record stays pure data, and the schema is defined in one place. The
-three modes are flags on the same scan:
+modes are flags on the same scan:
 
 ```sh
 boot.sh <record-root>                 the boot digest
 boot.sh <record-root> --check         exit 1 if the index is stale
 boot.sh <record-root> --query <pred>  filter the same table
+boot.sh <record-root> --card          the session-start name card
 ```
+
+## The card is a different question, not a smaller digest
+
+The digest answers *where were we*; the card answers *who is this*, for a
+**shipping** session that never opened the mentoring skill and cannot afford
+the skill body. It carries two terms and nothing else — the marked spans of
+Level 0, and the topics touched recently — because those are the only two that
+measured bounded. The hand-written page is constant in size at every record
+size, so trimming topic rows while it is uncut saves nothing. Everything else
+in the digest grows: the active list monotonically, since an abandoned learning
+thread never retires, and a complete owned list linearly, with no cap available
+because completeness is the whole point of it. A recent-activity window is
+bounded by how much the learner touches rather than by how much they have
+learned.
+
+Two properties keep it honest. **It states that it is a window**, so absence is
+never read as newness — the query mode is there when certainty matters, and
+that is what makes a small payload safe rather than merely small. And **it is
+read-only**: it fires in repositories that have nothing to do with the record,
+where regenerating an index would be a surprise write.
+
+The page subset is delimited by `<!-- BEGIN CARD -->` / `<!-- END CARD -->`
+markers rather than found by heading name, because heading-matching fails
+silently — rename a heading and the card quietly empties with nothing to
+announce it. A missing marker is announced instead. The monthly housekeeping
+pass is the only writer of Level 0 and therefore the only maintainer of the
+markers.
 
 **The general rule:** state that grows without bound cannot be loaded eagerly, so
 the entry point has to be a query rather than a file. Once the entry point is a

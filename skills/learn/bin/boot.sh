@@ -5,6 +5,7 @@
 #   boot.sh <record-root>                   the boot digest
 #   boot.sh <record-root> --check           exit 1 if the index is stale
 #   boot.sh <record-root> --query <pred>    filter the same table
+#   boot.sh <record-root> --card            the session-start name card
 #
 # This ships with the skill and never with the record. The record stays pure
 # data, everything executable stays in one place, and the schema therefore has
@@ -24,12 +25,18 @@ RUSTY_DAYS=${LEARN_RUSTY_DAYS:-60}
 STALE_GAP_DAYS=${LEARN_STALE_GAP_DAYS:-180}
 WIP_CAP=${LEARN_WIP_CAP:-3}
 HOUSEKEEP_DAYS=${LEARN_HOUSEKEEP_DAYS:-30}
+# The card's window. Days bound it in practice; the row cap is what makes the
+# ceiling assertable, because a burst week is not bounded by a date range.
+CARD_DAYS=${LEARN_CARD_DAYS:-30}
+CARD_ROWS=${LEARN_CARD_ROWS:-12}
 
 BEGIN_MARK="<!-- BEGIN GENERATED INDEX -- edit the pages, not this block -->"
 END_MARK="<!-- END GENERATED INDEX -->"
+CARD_BEGIN="<!-- BEGIN CARD"
+CARD_END="<!-- END CARD"
 TAB="$(printf '\t')"
 
-usage() { sed -n '3,7p' "$0" | sed 's/^#\{1,\} \{0,1\}//'; }
+usage() { sed -n '3,8p' "$0" | sed 's/^#\{1,\} \{0,1\}//'; }
 
 # -------------------------------------------------------------- arguments ---
 
@@ -38,6 +45,7 @@ while [ $# -gt 0 ]; do
   case "$1" in
     --check)   MODE=check; shift ;;
     --query)   MODE=query; PRED="${2-}"; shift; [ $# -gt 0 ] && shift ;;
+    --card)    MODE=card; shift ;;
     -h|--help) usage; exit 0 ;;
     -*)        echo "boot.sh: unknown option $1" >&2; exit 2 ;;
     *)         ROOT="$1"; shift ;;
@@ -208,6 +216,114 @@ scan() {
 scan > "$SCAN"
 TOTAL="$(wc -l < "$SCAN" | tr -d ' ')"
 
+# section <header> <rows-file> -- pad every column but the last to the widest
+# entry in that column, so the digest scans as a table without being one. Two
+# passes over the same small file; the first only measures.
+section() {
+  local hdr="$1" rows="$2" n
+  n="$(wc -l < "$rows" | tr -d ' ')"
+  if [ "$n" -eq 0 ]; then
+    return 0
+  fi
+  printf '\n%s\n' "$hdr"
+  awk -F'\t' '
+    NR == FNR {
+      for (i = 1; i <= NF; i++) if (length($i) > w[i]) w[i] = length($i)
+      if (NF > cols) cols = NF
+      next
+    }
+    {
+      line = "  "
+      for (i = 1; i <= NF; i++) {
+        line = line (i < cols ? sprintf("%-*s  ", w[i], $i) : $i)
+      }
+      print line
+    }' "$rows" "$rows"
+}
+
+# ------------------------------------------------------------------ card ---
+#
+# The name card: the smallest payload that tells an agent who it is working
+# with, for a SHIPPING session that cannot afford the skill body. It is not a
+# smaller digest -- it is a different question. The digest answers "where were
+# we", the card answers "who is this".
+#
+# Two terms and nothing else, because measurement said so. The hand-written
+# Level 0 page is ~694 tokens and CONSTANT at every record size, so trimming
+# topic rows while it is uncut achieves nothing; an anchors-plus-mission subset
+# of it is ~178. And nothing else in the digest is bounded -- the active list
+# grows monotonically because an abandoned learning thread never retires, and a
+# complete owned list is strictly linear in record size with no cap available,
+# since completeness is the only thing it is for. A recent-activity window is
+# the one term bounded in practice: bounded by how much the learner touches,
+# not by how much they have learned.
+#
+# READ-ONLY, and early on purpose. This runs at the start of sessions the
+# learner never opened a mentoring skill for, in repositories that have nothing
+# to do with the record. Regenerating the index from there would write to the
+# record on every unrelated session start; the digest is where that belongs.
+
+if [ "$MODE" = card ]; then
+  # The page subset is delimited by explicit markers, never found by heading
+  # name. Heading-matching fails silently -- rename a heading and the card
+  # quietly empties, everything keeps working, and the nudges just get worse
+  # with nothing to announce it. A marker is assertable; a heading is a guess.
+  HAVE_MARKERS=0
+  if [ -f "$LEVEL0" ] && grep -Fq "$CARD_BEGIN" "$LEVEL0" && grep -Fq "$CARD_END" "$LEVEL0"; then
+    HAVE_MARKERS=1
+  fi
+
+  echo "LEARNER — name card"
+  if [ "$HAVE_MARKERS" -eq 1 ]; then
+    # Every marked span, in file order, verbatim. Several spans are allowed so
+    # a record adds markers where the material already sits, instead of moving
+    # a human's page around to make one contiguous region.
+    awk -v b="$CARD_BEGIN" -v e="$CARD_END" '
+      index($0, b) == 1 { on = 1; if (any) print ""; next }
+      index($0, e) == 1 { on = 0; next }
+      on { print ($0 == "" ? "" : "  " $0); any = 1 }' "$LEVEL0"
+  else
+    # Loud, and on stdout where the agent will actually see it. The whole point
+    # of markers is that their absence cannot pass for an empty card.
+    echo "  ⚠ This record's page carries no card markers, so the card has no"
+    echo "    who-is-this half — only the window below. The next housekeeping"
+    echo "    pass adds them; it is the only writer of that page."
+  fi
+
+  awk -F'\t' -v OFS='\t' -v d="$CARD_DAYS" '$12 <= d {
+      print $12, $1, $3, $2, $7 "/" $8, $12 "d", ($13 == "" ? "-" : $13)
+    }' "$SCAN" | LC_ALL=C sort -t"$TAB" -k1,1n -k2,2 | cut -f2- > "$TMP/window.all"
+  WINDOW_N="$(wc -l < "$TMP/window.all" | tr -d ' ')"
+  head -n "$CARD_ROWS" "$TMP/window.all" > "$TMP/window"
+  SHOWN_N="$(wc -l < "$TMP/window" | tr -d ' ')"
+
+  CARD_HDR="RECENT — touched in the last ${CARD_DAYS}d ($WINDOW_N)"
+  if [ "$SHOWN_N" -lt "$WINDOW_N" ]; then
+    CARD_HDR="RECENT — touched in the last ${CARD_DAYS}d (newest $SHOWN_N of $WINDOW_N)"
+  fi
+  # A row carries its track and one recognition handle, never a bare slug:
+  # `watermarks` means one thing in stream processing and another in image
+  # work, and an agent guessing wrong nudges about the wrong topic. The slug
+  # itself stays untouched -- it is the identifier the anchor graph points at,
+  # so renaming it is a graph migration where widening the row is free.
+  if [ "$WINDOW_N" -eq 0 ]; then
+    # An empty window is a fact about the last few weeks, not a broken card, so
+    # it is stated rather than left as a missing section.
+    printf '\n%s\n' "$CARD_HDR"
+    printf '  %s\n' "nothing touched in this window"
+  else
+    section "$CARD_HDR" "$TMP/window"
+  fi
+
+  # The line that makes the small payload safe. Never conclude a topic is new
+  # from its absence here; when certainty is needed, the query mode is free.
+  printf '\n%s\n' "This is a recent window, not the record ($TOTAL topics). A topic missing"
+  printf '%s\n' "here is one that has not been touched lately, never one that is new. For"
+  printf '%s\n' "certainty, ask the record: boot.sh <record root> --query all"
+  exit 0
+fi
+
+
 # ----------------------------------------------------------------- index ---
 #
 # The generated router. It *is* the aggregate table, so no second store exists;
@@ -340,38 +456,17 @@ if [ -f "$LEVEL0" ]; then
   # Level 0, verbatim. This is the pseudo-preload: the harness will never load
   # the record's own instruction file, because the record is never the repo the
   # session was spawned in, so the script emits what a preload would have.
-  awk 'NR == 1 && $0 == "---" { fm = 1; next }
+  # The card markers are machinery for the other mode; a mentoring session gets
+  # the whole page and has no use for the boundary inside it.
+  awk -v b="$CARD_BEGIN" -v e="$CARD_END" '
+       NR == 1 && $0 == "---" { fm = 1; next }
        fm && $0 == "---"      { fm = 0; next }
+       index($0, b) == 1 || index($0, e) == 1 { next }
        !fm                    { print ($0 == "" ? "" : "  " $0) }' "$LEVEL0"
 else
   echo "  No Level 0 yet -- this record has never been told who the learner is."
   echo "  It is written during housekeeping, never during a learning session."
 fi
-
-# section <header> <rows-file> -- pad every column but the last to the widest
-# entry in that column, so the digest scans as a table without being one. Two
-# passes over the same small file; the first only measures.
-section() {
-  local hdr="$1" rows="$2" n
-  n="$(wc -l < "$rows" | tr -d ' ')"
-  if [ "$n" -eq 0 ]; then
-    return 0
-  fi
-  printf '\n%s\n' "$hdr"
-  awk -F'\t' '
-    NR == FNR {
-      for (i = 1; i <= NF; i++) if (length($i) > w[i]) w[i] = length($i)
-      if (NF > cols) cols = NF
-      next
-    }
-    {
-      line = "  "
-      for (i = 1; i <= NF; i++) {
-        line = line (i < cols ? sprintf("%-*s  ", w[i], $i) : $i)
-      }
-      print line
-    }' "$rows" "$rows"
-}
 
 # ACTIVE -- learning, with open reps, most recently touched first. This is
 # where a session resumes by default, and the seen_in fragment is what makes a

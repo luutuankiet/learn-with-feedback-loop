@@ -68,7 +68,7 @@ A dedicated session with a fresh context window. Never tack it onto the end of a
 2. **Repair broken anchors.** Every `anchor` must name a topic page that exists. A dangling edge silently breaks the adjacency ranking, which then quietly ranks against nothing.
 3. **Merge duplicates.** Two pages for one idea split its history. Keep the one with the learner's own model line; fold the other's `seen_in`, `touches` and open reps into it and delete it.
 4. **Prune the dead.** A `gap` topic nobody has touched in six months was never a gap, it was a passing mention. Delete it — git keeps it, and it will resurface honestly if it matters.
-5. **Rewrite Level 0 in place.** Distil, never accumulate; the v1 profile bloated by appending. Confirm the mission still reads true — it is standing context for every session.
+5. **Rewrite Level 0 in place.** Distil, never accumulate; the v1 profile bloated by appending. Confirm the mission still reads true — it is standing context for every session. **Then check the card markers, in the same breath as the rewrite.** The spans between `<!-- BEGIN CARD -->` and `<!-- END CARD -->` are what a shipping session gets instead of this page, this pass is their only maintainer, and a rewrite is exactly when material moves out from between them. Keep the spans short — anchors and the mission, not the page — and move a marker whenever you move what it wrapped.
 6. **Regenerate the index** and confirm `check` exits clean.
 7. **Re-measure** (§2) and record the numbers in §6.
 
@@ -94,6 +94,7 @@ And anything that changes how the record is *read* must be checked against every
 ## 5 · Verify
 
 - Boot the record and confirm Level 0 and all three derived sections render.
+- Render the card (`--card`) and read it as a stranger would: it must carry the anchors and the mission, nothing else from the page, and no warning about missing markers.
 - `check` exits clean; the index matches the pages.
 - Zero broken anchors.
 - No derived field appears in any page's frontmatter — see the derived table in `ref/profile-schema.md`. One is a bug.
