@@ -36,8 +36,9 @@ own model line left empty, and no future session can mistake that for knowledge.
 
 **And you don't have to remember to do it.** Opt a machine in and your ordinary
 sessions start already knowing who you are; when the work you are doing walks into
-something on your map, the agent says so once, at the end of a turn, and offers.
-Ignore it and it costs you a line. [How that works](#the-nudge--how-mode-two-actually-starts).
+something on your map, the agent says so once, at the end of a turn — a 🍄 in the
+middle of your build output, offering the thing you just walked past. Ignore it and
+it costs you a line. [How that works](#the-nudge--how-mode-two-actually-starts).
 
 The direction of travel is the point. The share of the code the agent writes should
 trend down, the share you write should trend up, and the scaffold should fade
@@ -313,18 +314,32 @@ words are what got written down**. It is a progress bar you cannot advance by
 consuming — the only move that changes a row is saying the thing out loud.
 
 **Then the agent may nudge, once.** Only when the session's work genuinely touched
-something on the card, and it has to name the trigger. Three symbols, one line
-each:
+something on the card, and it has to name the trigger. It gets one interruption,
+competing with a screen of build output — so it does not arrive as a polite grey
+sentence your eye slides past. It arrives as a **pickup**:
 
 ```text
-▲  a gap the work just walked into
-◆  reps left open on something already in flight
-○  never said back in their own words — not safe to build on
+━━━━━━━ 🍄 POWER-UP AVAILABLE ━━━━━━━
+how a proxy decides which host a request belongs to
+
+Those routing labels no longer match how this actually runs — the
+flat single-port assumption is the part that breaks. Same question
+as your homelab migration, wearing a container costume.
+
+▸ twenty minutes on it now, or keep going?
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 ```
 
-In practice it costs you one line, at the end of a turn that was already
-finishing. You were not studying anything — it is six in the evening and you are
-fixing a queue consumer:
+Three kinds, and the header tells you which without reading a word of the body:
+
+| | | |
+|---|---|---|
+| 🍄 | **POWER-UP AVAILABLE** | a gap the work just walked into — something you don't have yet |
+| ⭐ | **STARS LEFT ON THIS LEVEL** | reps left open on something already in flight |
+| 👻 | **GHOST KNOWLEDGE** | never said back in your own words — looks solid, isn't safe to build on |
+
+Here it is landing where it actually lands. You were not studying anything; it is
+six in the evening and you are fixing a queue consumer:
 
 ```text
 > the consumer double-processes on redeploy, fix it
@@ -333,33 +348,32 @@ fixing a queue consumer:
   drops a repeat instead of re-running it.
   14 passed, 0 failed.
 
-  ◆ how long to wait before trying again — came up in the consumer you
-    just changed. Two reps still open on it. Want one, or carry on?
+  ━━━━━ ⭐ STARS LEFT ON THIS LEVEL ━━━━━
+  how long to wait before trying again
 
-> carry on
+  Came up in the consumer you just changed — you left two reps
+  open on it last time.
+
+  ▸ want one now, or keep going?
+  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+> keep going
 ```
 
 **That is the entire cost of declining: you type two words.** No skill loads, no
-session opens, nothing is logged against you, and it does not ask again. Answer
-`go on` instead and the mentoring skill loads right there, mid-repo, with the
-consumer you just wrote as the material — which is the whole point of catching
-you here rather than in a study session you would have had to remember to open.
+session opens, nothing is logged against you, and it does not ask again. Say yes
+instead and the mentoring skill loads right there, mid-repo, with the consumer you
+just wrote as the material — which is the whole point of catching you here rather
+than in a study session you would have had to remember to open.
 
-The other two symbols read the same way, and the register never changes — it
-talks about the thing, never about your file:
-
-```text
-▲ back-pressure — the consumer you just wrote has no answer for a slow
-  downstream, and neither do you yet. Worth twenty minutes some time?
-
-○ you have never actually said the exactly-once argument back in your own
-  words, and three things in this repo now sit on top of it.
-```
+**👻 is the one that stings**, and it is the honest half of the scoreboard: the
+only line in the system that says out loud you have been building on top of
+something you have never once explained. It looked solid every time you walked
+past it, and there was never anything there.
 
 Notice what is *not* in any of those lines: no slug, no status word, no date, no
-file. `○` is the one that stings — and it is the honest half of the scoreboard,
-because it is the only line that says out loud that you have been building on
-something you have never once explained.
+file. The game framing is on the outside only — what it says to you is always
+just the thing, in plain English.
 
 **What it will not do** is the whole point. It never asks a question that halts
 the turn. It never nudges because there is material sitting there — if your work
