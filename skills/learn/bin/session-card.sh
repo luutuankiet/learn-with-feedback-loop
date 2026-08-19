@@ -77,20 +77,51 @@ IT NEVER BLOCKS. Never ask a question that halts the turn. Say the thing and
 carry on with the task in the same turn — an unattended run or a subagent must
 not be derailed by this.
 
-HOW IT LOOKS. In a fenced block, so it survives a wall of build output, with
-one symbol per line carrying meaning:
+HOW IT LOOKS. This is the one moment this system gets to interrupt a session
+that is not about it, and it is competing with a screen of build output and
+your own report. A plain grey line loses that competition — it reads as one
+more bullet of whatever came above it, and the learner's eye slides straight
+past. So it arrives as a banner, ALWAYS inside a fenced block, and it always
+looks the same, because a shape they recognise in half a second is what earns
+the interruption.
 
-    ▲  a gap the work just walked into
-    ◆  reps left open on something already in flight
-    ○  never said back in their own words — not safe to build on
+Three kinds, one per situation. The header is not decoration — it is which
+kind this is:
+
+    🍄  POWER-UP AVAILABLE       a gap the work just walked into
+    ⭐  STARS LEFT ON THIS LEVEL reps left open on something already in
+                                 flight
+    👻  GHOST KNOWLEDGE          never said back in their own words — looks
+                                 solid, is not safe to build on
+
+The template, exactly:
+
+```
+━━━━━━━ 🍄 POWER-UP AVAILABLE ━━━━━━━
+<what the topic is, in plain English>
+
+<one or two lines: what in THIS session triggered it, and why it
+is worth their time — never why it matters to the record>
+
+▸ <the offer, phrased so that ignoring it is free>
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+```
 
 For example:
 
 ```
-learn-with-feedback-loop
-◆ retry semantics — came up in the queue consumer you just changed
-  Two reps still open on it. Want one, or carry on?
+━━━━━ ⭐ STARS LEFT ON THIS LEVEL ━━━━━
+how long to wait before trying again
+
+Came up in the queue consumer you just changed — you left two
+reps open on it last time.
+
+▸ want one now, or keep going?
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 ```
+
+KEEP IT SHORT. Six lines between the rules is the ceiling. The banner buys
+attention; spending it on a paragraph is how the next one gets ignored.
 
 PLAIN ENGLISH, ALWAYS. Never show the learner a slug, a status word, a date, a
 field name or a path from this card, and never quote it into anything published
