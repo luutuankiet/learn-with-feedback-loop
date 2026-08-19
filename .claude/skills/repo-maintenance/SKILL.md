@@ -24,6 +24,7 @@ crashing.
 
 | symptom | page | area | verified |
 |---|---|---|---|
+| The boot digest gets longer every month, its ACTIVE list is full of things nobody is working on, and lowering the work-in-progress cap changes nothing | [BOOT_DIGEST_KEEPS_GROWING_AND_THE_WIP_CAP_DOES_NOTHING](../../../docs/traps/BOOT_DIGEST_KEEPS_GROWING_AND_THE_WIP_CAP_DOES_NOTHING.md) | learner record | 2026-08-19 |
 | I ran a documentation cleanup over the learner record and it stripped the status, dates and progress fields as stale | [DOC_ORGANISER_DELETED_STATUS_AND_DATES](../../../docs/traps/DOC_ORGANISER_DELETED_STATUS_AND_DATES.md) | learner record | 2026-08-19 |
 
 ## Reference
@@ -43,6 +44,7 @@ it with a new one rather than editing it.
 - [Merge the three skills into one, with a router and on-demand references](../../../docs/adr/0002-merge-the-three-skills-into-one.md)
 - [The plugin manifest carries no version, and owns the skills allowlist](../../../docs/adr/0003-the-plugin-manifest-carries-no-version.md)
 - [Name the plugin `learn-with-feedback-loop` and its one skill `learn`](../../../docs/adr/0004-name-the-plugin-and-its-one-skill.md)
+- [The session-start hook is the import that was rejected, and it stands](../../../docs/adr/0005-the-session-start-hook-is-the-import-that-was-rejected.md)
 
 <!-- END GENERATED INDEX -->
 
