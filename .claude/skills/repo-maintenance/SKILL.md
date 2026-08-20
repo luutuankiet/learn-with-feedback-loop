@@ -45,6 +45,7 @@ it with a new one rather than editing it.
 - [The plugin manifest carries no version, and owns the skills allowlist](../../../docs/adr/0003-the-plugin-manifest-carries-no-version.md)
 - [Name the plugin `learn-with-feedback-loop` and its one skill `learn`](../../../docs/adr/0004-name-the-plugin-and-its-one-skill.md)
 - [The session-start hook is the import that was rejected, and it stands](../../../docs/adr/0005-the-session-start-hook-is-the-import-that-was-rejected.md)
+- [The plugin registers its own session-start hook](../../../docs/adr/0006-the-plugin-registers-its-own-session-start-hook.md)
 
 <!-- END GENERATED INDEX -->
 

@@ -383,11 +383,13 @@ status tokens, not even quoted back as a phrase. And accepting is what loads the
 mentoring skill — decline and nothing further happens, no skill, no session, no
 second ask.
 
-**Opting in is structural, not a setting.** The installer registers the hook in
-the same act that records your record's address, so a fresh plugin install has
-nothing registered — nothing to fire and nothing to fail. Deleting that one
-marked block from your instruction file turns off the card and the address
-together, in a single edit. A machine that never opted in runs none of this.
+**Opting in is one marked block, not a setting.** The card is delivered by a
+session-start hook the plugin declares for itself, so it runs wherever the plugin
+is installed — but it reads your record's address out of a marked block in your
+instruction file, and without one it emits nothing and stops. That is the whole
+of what a machine that never opted in ever sees: a few milliseconds of a script
+finding nothing. Deleting that one marked block turns off the card and the
+address together, in a single edit.
 
 ---
 
@@ -423,8 +425,9 @@ The plugin lives in a cache whose path differs per machine, so the simplest way 
 run that is to ask your session — *"set up my learner record, the remote is `…`"* —
 and let it use the skill directory it just loaded. The script clones the record, or
 seeds an empty remote from the shipped skeleton, then writes the address into your
-user-scope instruction file so every future session can find it — and in the same
-act registers the session-start hook that delivers the card. `install.sh --where`
+user-scope instruction file so every future session can find it. That address is
+also what switches the card on — the hook itself arrives with the plugin and does
+nothing until the block exists. `install.sh --where`
 prints the recorded path without changing anything, which is how you check whether
 a machine is already set up.
 

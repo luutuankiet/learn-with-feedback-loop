@@ -22,7 +22,7 @@ something is implemented.
 | page | covers | verified |
 |---|---|---|
 | [The graded rebuild](../../../docs/architecture/rebuild-to-own.md) | how a learner is taught a codebase they did not write, and why git is doing the work | 2026-08-19 |
-| [The learner record](../../../docs/architecture/the-learner-record.md) | where the learner's data actually lives, why it is not in this repo, and what a session is allowed to read of it | 2026-08-19 |
+| [The learner record](../../../docs/architecture/the-learner-record.md) | where the learner's data actually lives, why it is not in this repo, and what a session is allowed to read of it | 2026-08-20 |
 | [The portable boundary](../../../docs/architecture/the-portable-boundary.md) | which half of the skill is allowed to touch the filesystem, and what proves it | 2026-08-19 |
 
 <!-- END GENERATED INDEX -->
