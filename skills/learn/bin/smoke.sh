@@ -356,17 +356,18 @@ check "an empty record boots rather than failing" \
   printf '# notes\n\nprose that was here first.\n' > "$LEARN_AGENTS_FILE"
   git init -q --bare "$WORK/remote.git"
 
-  # Opting in is structural: the hook is registered by this script and by
-  # nothing else, so a machine that never ran it has no hook to fire and none
-  # to fail. The settings file starts with a key of its own, because merging
-  # into a file somebody else owns lines of is the risky half.
+  # Opting in is the marked block and nothing else. The hook now arrives with
+  # the plugin, so what has to hold is that a machine which never ran this
+  # script still sees NOTHING -- and that this script never writes to the
+  # settings file, which it has no business touching now that registration
+  # moved into the plugin manifest.
   SETTINGS="$HOME/.claude/settings.json"
   export LEARN_SETTINGS_FILE="$SETTINGS"
   printf '{\n  "a-setting-that-was-here-first": true\n}\n' > "$SETTINGS"
-  check "a machine that never opted in has no hook at all" \
-    "$(grep -c 'SessionStart' "$SETTINGS")" "0"
   check "the card says nothing before there is an address" \
     "$("$HERE/session-card.sh" 2>&1 | wc -c | tr -d ' ')" "0"
+  check "the card is a clean exit before there is an address" \
+    "$("$HERE/session-card.sh" >/dev/null 2>&1; echo $?)" "0"
 
   check "no URL is a usage error, not a guess" \
     "$($INSTALL >/dev/null 2>&1; echo $?)" "2"
@@ -409,15 +410,28 @@ check "an empty record boots rather than failing" \
   CARDHOOK="$HERE/session-card.sh"
   [ -x "$CARDHOOK" ] || bad "session-card.sh is not executable"
 
-  RESOLVER="$HOME/.claude/hooks/learn-with-feedback-loop-card.sh"
-  check "installing registers a hook at a path that does not move" \
-    "$([ -x "$RESOLVER" ] && echo registered || echo absent)" "registered"
-  check "the settings file names the resolver" \
-    "$(grep -c "learn-with-feedback-loop-card" "$SETTINGS")" "1"
-  check "re-running does not stack a second registration" \
-    "$(grep -c "learn-with-feedback-loop-card" "$SETTINGS")" "1"
-  check "settings that were already there survive" \
+  # The registration is the plugin's, not ours. These three say the installer
+  # keeps its hands off the settings file entirely -- the failure they guard is
+  # a machine carrying two registrations and injecting the card twice, which
+  # produces no error and no symptom, just a quietly doubled context.
+  check "installing writes no hook into the settings file" \
+    "$(grep -c 'SessionStart' "$SETTINGS")" "0"
+  check "installing leaves no resolver behind in user scope" \
+    "$([ -e "$HOME/.claude/hooks/learn-with-feedback-loop-card.sh" ] && echo present || echo absent)" "absent"
+  check "settings that were already there survive untouched" \
     "$(grep -c 'a-setting-that-was-here-first' "$SETTINGS")" "1"
+
+  # The manifest is the one registration, and it must name the active plugin
+  # through the harness variable rather than any path this repo can compute.
+  MANIFEST="$(dirname -- "$(dirname -- "$(dirname -- "$HERE")")")/hooks/hooks.json"
+  check "the plugin declares the session-start hook itself" \
+    "$([ -f "$MANIFEST" ] && echo declared || echo missing)" "declared"
+  check "the declared command resolves through the harness, not a fixed path" \
+    "$(grep -c 'CLAUDE_PLUGIN_ROOT' "$MANIFEST")" "1"
+  check "the declared command points at the card" \
+    "$(grep -c 'skills/learn/bin/session-card.sh' "$MANIFEST")" "1"
+  check "the declaration is valid json" \
+    "$(python3 -c 'import json,sys;json.load(open(sys.argv[1]));print("ok")' "$MANIFEST" 2>/dev/null || echo bad)" "ok"
 
   # The record cloned above is the template seed, so give it something to say.
   cat >> "$HOME/rec/AGENTS.md" <<'EOF'
@@ -442,7 +456,7 @@ seen_in:
 # retry-semantics
 EOF
 
-  HOOKOUT="$("$RESOLVER")"; HOOKRC=$?
+  HOOKOUT="$("$CARDHOOK")"; HOOKRC=$?
   check "the hook exits clean" "$HOOKRC" "0"
   check "the hook emits one line of hook JSON" \
     "$(printf '%s\n' "$HOOKOUT" | wc -l | tr -d ' ')" "1"
@@ -460,21 +474,24 @@ EOF
   check "a row says when a topic was never said back" \
     "$("$CARDHOOK" --text | grep -c 'never-said-back')" "1"
 
-  # Opting out is one edit to the block that opted in. The hook may still be
-  # registered -- it finds no address, says nothing, and exits clean.
+  # Opting out is one edit to the block that opted in. The hook stays registered
+  # -- it is the plugin's, and removing the plugin is a different act -- so it
+  # fires, finds no address, says nothing, and exits clean. This is now the only
+  # thing an un-opted-in machine relies on, so it is asserted twice: silence,
+  # and a zero exit.
   cp "$LEARN_AGENTS_FILE" "$WORK/agents.keep"
   : > "$LEARN_AGENTS_FILE"
-  check "no address means no output at all" "$("$RESOLVER" | wc -c | tr -d ' ')" "0"
-  check "no address is still a clean exit" "$("$RESOLVER" >/dev/null 2>&1; echo $?)" "0"
+  check "no address means no output at all" "$("$CARDHOOK" | wc -c | tr -d ' ')" "0"
+  check "no address is still a clean exit" "$("$CARDHOOK" >/dev/null 2>&1; echo $?)" "0"
   cat "$WORK/agents.keep" > "$LEARN_AGENTS_FILE"
 
   # A record whose directory has gone is the one failure worth putting into
   # context -- the repair belongs to a mentoring session, and the danger is a
   # second record being seeded by something that meant well.
   mv "$HOME/rec" "$HOME/rec.away"
-  GONE="$("$RESOLVER")"
+  GONE="$("$CARDHOOK")"
   check "a missing record is still a clean exit" \
-    "$("$RESOLVER" >/dev/null 2>&1; echo $?)" "0"
+    "$("$CARDHOOK" >/dev/null 2>&1; echo $?)" "0"
   check "a missing record is reported to the agent, not repaired" \
     "$(printf '%s\n' "$GONE" | grep -c 'NOT ON THIS MACHINE')" "1"
   check "a missing record seeds nothing" \
@@ -482,34 +499,22 @@ EOF
   mv "$HOME/rec.away" "$HOME/rec"
 
   # The plugin is cached per source commit, so the directory the skill lives in
-  # is gone after every update. The resolver has to survive that, and survive
-  # the plugin being removed outright, without ever reporting a broken command.
-  STALE="$WORK/stale-resolver.sh"
-  sed -e "s|^BIN=.*|BIN=\"$WORK/gone/skills/learn/bin\"|" \
-      -e "s|^ROOT=.*|ROOT=\"$WORK/gone\"|" "$RESOLVER" > "$STALE"
-  chmod +x "$STALE"
-  check "a resolver whose skill directory vanished exits clean" \
-    "$("$STALE" >/dev/null 2>&1; echo $?)" "0"
-  check "a resolver whose skill directory vanished says nothing" \
-    "$("$STALE" 2>/dev/null | wc -c | tr -d ' ')" "0"
+  # changes on every update. Nothing here may name one. The harness expands
+  # CLAUDE_PLUGIN_ROOT to whichever version it loaded, and the only defence
+  # against drifting back to a hand-resolved path is that no shipped file
+  # contains a cache path or a commit-shaped directory at all -- a pin fails by
+  # running an old copy forever, which reports success and changes nothing.
+  # The needle is split so this file does not match its own search.
+  NEEDLE="plugins""/cache"
+  PINS="$(grep -rIl "$NEEDLE" "$(dirname -- "$(dirname -- "$(dirname -- "$HERE")")")" \
+          --exclude-dir=.git --exclude-dir=tmp --exclude-dir=docs 2>/dev/null | wc -l | tr -d ' ')"
+  check "no shipped file names the plugin cache" "$PINS" "0"
 
-  # The other half of the same problem, and the one that fails quietly: the
-  # cache keeps old versions on disk, so a resolver that preferred what it was
-  # installed against would go on running it after every update -- an update
-  # that reports success and changes nothing.
-  CACHE="$WORK/cache"
-  for v in old new; do
-    mkdir -p "$CACHE/$v/skills/learn/bin"
-    printf '#!/usr/bin/env bash\necho %s\n' "$v" > "$CACHE/$v/skills/learn/bin/session-card.sh"
-    chmod +x "$CACHE/$v/skills/learn/bin/session-card.sh"
-  done
-  touch "$CACHE/new/skills/learn/bin/session-card.sh"
-  FRESH="$WORK/fresh-resolver.sh"
-  sed -e "s|^BIN=.*|BIN=\"\"|" \
-      -e "s|^ROOT=.*|ROOT=\"$CACHE\"|" "$RESOLVER" > "$FRESH"
-  chmod +x "$FRESH"
-  check "the resolver runs the newest cached copy, not the installed-against one" \
-    "$("$FRESH")" "new"
+  # The card locates boot.sh and install.sh as its own siblings, so wherever the
+  # harness points it, it drags the matching versions with it. Running it from
+  # an unrelated working directory must change nothing.
+  check "the card does not depend on the working directory" \
+    "$(cd / && "$CARDHOOK" --text | grep -c 'Stop being the person')" "1"
 
   # The one that matters: a second machine cloning the SAME remote must adopt
   # the existing record, never seed a rival one.

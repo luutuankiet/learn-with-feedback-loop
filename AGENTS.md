@@ -30,6 +30,8 @@ gaps, phrasings, preferences — so a session resumes where the last one stopped
 ```
 .claude-plugin/plugin.json    the manifest; its skills[] allowlist names paths,
                               and it carries no version key on purpose (adr 0003)
+hooks/hooks.json              the plugin's own SessionStart registration, resolved
+                              through ${CLAUDE_PLUGIN_ROOT} (adr 0006)
 skills/learn/                 the one skill — router + the mentoring discipline
   SKILL.md                    always loaded; names no path, no storage
   ref/record.md               the learner record: boot, harvest, the wrap-write
@@ -38,9 +40,9 @@ skills/learn/                 the one skill — router + the mentoring disciplin
   ref/profile-schema.md       the record's locked structure, and why
   ref/profile-housekeeping.md the maintenance runbook, loaded on demand
   bin/boot.sh                 the record's one-call session opening
-  bin/install.sh              one-per-machine setup: clone, seed, state the address,
-                              register the session-start hook
-  bin/session-card.sh         the hook body: the card, into agent context only
+  bin/install.sh              one-per-machine setup: clone, seed, state the address
+  bin/session-card.sh         the hook body: the card, into agent context only.
+                              Also the plugin's hook entry point (adr 0006)
   templates/record/           the skeleton a brand-new record is seeded from
   templates/track/            the syllabus docs a rebuild track is stamped from
 scripts/gen-docs-index.sh     regenerates every index here

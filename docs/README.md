@@ -16,7 +16,7 @@ something is implemented.
 | page | covers | verified |
 |---|---|---|
 | [The graded rebuild](architecture/rebuild-to-own.md) | how a learner is taught a codebase they did not write, and why git is doing the work | 2026-08-19 |
-| [The learner record](architecture/the-learner-record.md) | where the learner's data actually lives, why it is not in this repo, and what a session is allowed to read of it | 2026-08-19 |
+| [The learner record](architecture/the-learner-record.md) | where the learner's data actually lives, why it is not in this repo, and what a session is allowed to read of it | 2026-08-20 |
 | [The portable boundary](architecture/the-portable-boundary.md) | which half of the skill is allowed to touch the filesystem, and what proves it | 2026-08-19 |
 
 ## Traps
@@ -48,5 +48,6 @@ it with a new one rather than editing it.
 - [The plugin manifest carries no version, and owns the skills allowlist](adr/0003-the-plugin-manifest-carries-no-version.md)
 - [Name the plugin `learn-with-feedback-loop` and its one skill `learn`](adr/0004-name-the-plugin-and-its-one-skill.md)
 - [The session-start hook is the import that was rejected, and it stands](adr/0005-the-session-start-hook-is-the-import-that-was-rejected.md)
+- [The plugin registers its own session-start hook](adr/0006-the-plugin-registers-its-own-session-start-hook.md)
 
 <!-- END GENERATED INDEX -->

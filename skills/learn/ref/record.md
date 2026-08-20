@@ -97,14 +97,15 @@ to announce it. A missing marker is announced instead. Housekeeping is the only
 writer of Level 0, so it is also the only maintainer of those markers —
 `profile-housekeeping.md` carries the step.
 
-**The card is delivered by a session-start hook, and delivery is opt-in
-structurally.** `<skill dir>/bin/session-card.sh` is what the hook runs: it reads
+**The card is delivered by a session-start hook, and the marked block is the
+only opt-in.** `<skill dir>/bin/session-card.sh` is what the hook runs: it reads
 the address, renders the card, and hands it to the **agent's context** — never to
-the learner's screen. Nothing registers it except the setup script below, so a
-machine that never ran setup has no hook at all: nothing to fire and nothing to
-fail. It never blocks, never asks a question that halts a turn, and emits nothing
-when there is no address, when the record is gone, or when anything else goes
-wrong. Deleting the marked block turns the whole thing off in one edit.
+the learner's screen. The plugin declares the hook itself, so it fires wherever
+the plugin is installed; a machine that never ran setup has no address, so the
+card emits nothing and exits clean, which is all such a machine ever sees. It
+never blocks, never asks a question that halts a turn, and emits nothing when
+there is no address, when the record is gone, or when anything else goes wrong.
+Deleting the marked block turns the whole thing off in one edit.
 
 **A card in context is not permission to mentor.** It carries its own rules, and
 they are the ones to follow: speak only when the session's work actually touched

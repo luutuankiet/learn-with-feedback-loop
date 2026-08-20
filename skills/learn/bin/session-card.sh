@@ -12,12 +12,18 @@
 #
 # THREE PROPERTIES, EACH LOAD-BEARING.
 #
-# It is opt-in structurally, not by a runtime check. Nothing registers this
-# script except install.sh, and install.sh registers it in the same act as it
-# writes the record's address. A machine that never opted in has no hook at all
-# -- nothing to fire, nothing to fail, nobody nagged. A hook that exists can
-# error, and an error on a machine that never asked for any of this is exactly
-# the burden the design has to avoid.
+# It is opt-in, and the check is HERE -- the first thing below. The plugin
+# declares this hook in hooks/hooks.json, so it fires on every machine that
+# installed the plugin, whether or not anyone ran setup. Without the record's
+# address it emits nothing and exits 0, which is the whole of what an
+# un-opted-in machine ever sees. That makes this file's first twenty lines the
+# only thing between a stranger and a nag, so nothing above the address check
+# may fail: no subshell that can die, no dependency that can be missing.
+#
+# Registration used to live in install.sh, which meant a machine that never ran
+# setup had no hook at all -- a stronger guarantee than this one, traded away
+# because it forced the hook to be a copy in user scope that had to chase the
+# plugin's version by hand. adr/0006 records the trade.
 #
 # It goes into the AGENT's context and never onto the learner's screen. The
 # hook protocol has a field for each; only the context one is used here. That

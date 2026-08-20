@@ -1,5 +1,9 @@
 # The session-start hook is the import that was rejected, and it stands
 
+> The last section, *"Why the registered command is a generated resolver"*, is
+> superseded by `0006-the-plugin-registers-its-own-session-start-hook.md`. The
+> rest of this page stands.
+
 The learner's record is found through a marked block in the user-scope
 instruction file that states a **path**, deliberately not an `@import`. Importing
 was rejected on the grounds that it would pull the most personal file the learner
